@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'YAPECLON',
-      initialRoute: '/registrar-datos',
+      initialRoute: '/house',
       routes: {
         '/login': (context) => LoginScreen(),
         '/crear-cuenta': (context) => CreateAccountScreen(),
