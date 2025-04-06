@@ -35,6 +35,7 @@ class RegisterDataScreen extends StatelessWidget {
                             fontSize: 20,
                           ),
                         ),
+                        SizedBox(height: 5),
                         Text(
                           "Completa el formulario, Recuerda que todos los datos son obligatorios",
                           style: TextStyle(color: Colors.white, fontSize: 13),
@@ -48,8 +49,74 @@ class RegisterDataScreen extends StatelessWidget {
             Expanded(
               child: Container(
                 width: double.infinity,
+                padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(color: Color(0xFFFFFFFF)),
-                child: Column(children: [Text("Crear Cuenta")]),
+
+                child: Column(
+                  spacing: 20,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      child: Column(
+                        spacing: -5,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Tipo de Documento",
+                            style: TextStyle(
+                              color: Color.fromARGB(62, 34, 34, 17),
+
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                              letterSpacing: .1,
+                            ),
+                          ),
+                          DropdownButton<String>(
+                            isExpanded: true,
+                            items:
+                                <String>["DNI"].map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    child: Text(value),
+                                    value: value,
+                                  );
+                                }).toList(),
+                            onChanged: (newValue) {},
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      child: Column(
+                        spacing: -5,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Número de documento",
+                            style: TextStyle(
+                              color: Color.fromARGB(62, 34, 34, 17),
+
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                              letterSpacing: .1,
+                            ),
+                          ),
+                          DropdownButton<String>(
+                            isExpanded: true,
+                            items:
+                                <String>["DNI"].map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    child: Text(value),
+                                    value: value,
+                                  );
+                                }).toList(),
+                            onChanged: (newValue) {},
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
