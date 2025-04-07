@@ -71,6 +71,7 @@ class _SliderWidgetState extends State<SliderWidget> {
             ],
           ),
         ),
+        SizedBox(height: 10),
       ],
     );
   }
