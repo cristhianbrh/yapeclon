@@ -1,6 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:yapeclon/models/ServiceCard.dart';
 
 class ServicesCardWidget extends StatelessWidget {
+  final List<ServiceCard> _servicesCard = [
+    ServiceCard(page: "/", name: "Recargar celular"),
+    ServiceCard(page: "/", name: "Yapear servicios"),
+    ServiceCard(page: "/", name: "Promos"),
+    ServiceCard(page: "/", name: "Código de aprobación"),
+    ServiceCard(page: "/", name: "Créditos"),
+    ServiceCard(page: "/", name: "Tienda"),
+    ServiceCard(page: "/", name: "Dólares"),
+    ServiceCard(page: "/", name: "Ver todos"),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -9,18 +21,18 @@ class ServicesCardWidget extends StatelessWidget {
       child: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
-          crossAxisSpacing: 8,
+          crossAxisSpacing: 7,
           childAspectRatio: .74,
         ),
         itemCount: 8,
         itemBuilder: (context, index) {
-          return _serviceCardView(context, index);
+          return _serviceCardView(context, _servicesCard[index]);
         },
       ),
     );
   }
 
-  Widget _serviceCardView(context, index) {
+  Widget _serviceCardView(context, ServiceCard serviceCurrent) {
     return Container(
       padding: EdgeInsets.all(6),
       decoration: BoxDecoration(
@@ -48,7 +60,7 @@ class ServicesCardWidget extends StatelessWidget {
           ),
           SizedBox(height: 4),
           Text(
-            'Recargar celular', // texto largo como prueba
+            serviceCurrent.name,
             style: TextStyle(
               color: Colors.white,
               fontSize: 12,
