@@ -87,7 +87,7 @@ class CreatePasswordScreen extends StatelessWidget {
               Container(
                 padding: EdgeInsets.only(
                   left: 20,
-                  bottom: 20,
+                  bottom: 0,
                   right: 20,
                   top: 33,
                 ),
@@ -106,15 +106,16 @@ class CreatePasswordScreen extends StatelessWidget {
 
                 child: Column(
                   children: [
-                    SizedBox(height: 33),
+                    Center(child: _buildIndicatorPasswordLength()),
+                    SizedBox(height: 15),
                     Container(
-                      height: 216,
+                      height: 275,
                       // color: Colors.red,
                       child: GridView.count(
                         crossAxisCount: 3,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
-                        childAspectRatio: 2.15,
+                        childAspectRatio: 1.8,
                         children: items,
                       ),
                     ),
@@ -141,7 +142,7 @@ Widget _buildButtonLogin({
     onPressed: onPressed,
     style: ElevatedButton.styleFrom(
       minimumSize: const Size(10, 10),
-      backgroundColor: bgColor ?? const Color.fromARGB(18, 249, 249, 249),
+      backgroundColor: bgColor ?? const Color.fromARGB(57, 249, 249, 249),
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
       elevation: 0,
@@ -155,5 +156,62 @@ Widget _buildButtonLogin({
                 style: const TextStyle(fontSize: 23, color: Colors.white),
               ),
     ),
+  );
+}
+
+Widget _buildIndicatorPasswordLength() {
+  return Row(
+    mainAxisSize: MainAxisSize.min,
+    spacing: 15,
+    children: [
+      Container(
+        height: 13,
+        width: 13,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.tealAccent,
+        ),
+      ),
+      Container(
+        height: 13,
+        width: 13,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.tealAccent,
+        ),
+      ),
+      Container(
+        height: 13,
+        width: 13,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.tealAccent,
+        ),
+      ),
+      Container(
+        height: 13,
+        width: 13,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.tealAccent,
+        ),
+      ),
+      Container(
+        height: 13,
+        width: 13,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.tealAccent,
+        ),
+      ),
+      Container(
+        height: 13,
+        width: 13,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.tealAccent,
+        ),
+      ),
+    ],
   );
 }
