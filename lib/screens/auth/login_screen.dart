@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
+import 'package:iconify_flutter/icons/teenyicons.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
@@ -133,7 +134,7 @@ Widget _ButtonHelp() {
   return ElevatedButton(
     onPressed: () {},
     style: ElevatedButton.styleFrom(
-      backgroundColor: const Color.fromARGB(80, 255, 255, 255),
+      backgroundColor: const Color.fromARGB(62, 255, 255, 255),
       padding: EdgeInsets.symmetric(
         horizontal: 8,
         vertical: 4,
@@ -153,8 +154,13 @@ Widget _ButtonHelp() {
       child: Row(
         mainAxisSize:
             MainAxisSize.min, // <-- importante para que Row no se expanda
+        spacing: 3,
         children: [
-          Icon(Icons.headset_mic_outlined, size: 25, color: Colors.white),
+          Iconify(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15"><path fill="none" stroke="#b44848" d="M12.5 12.5a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1Zm0 0a2 2 0 0 1-2 2H8m6.5-4.5V7.5a7 7 0 1 0-14 0V10m2 2.5a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2Z" stroke-width="1.4"/></svg>',
+            size: 20,
+            color: Colors.white,
+          ),
           SizedBox(width: 4), // separación entre ícono y texto
           Text("Ayuda", style: TextStyle(fontSize: 16, color: Colors.white)),
         ],
