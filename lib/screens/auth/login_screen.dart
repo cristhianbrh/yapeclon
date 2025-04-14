@@ -9,12 +9,14 @@ class LoginScreen extends StatelessWidget {
         onPressed: () => {},
         style: ElevatedButton.styleFrom(
           minimumSize: Size(10, 10),
-          backgroundColor: Colors.amber,
+          backgroundColor: const Color.fromARGB(18, 49, 49, 49),
           padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+          elevation: 0,
         ),
+
         child: Center(
-          child: Text("1", style: TextStyle(fontSize: 30, color: Colors.white)),
+          child: Text("1", style: TextStyle(fontSize: 23, color: Colors.black)),
         ),
       ),
     );
@@ -63,7 +65,12 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.only(
+                  left: 20,
+                  bottom: 20,
+                  right: 20,
+                  top: 33,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(15),
@@ -79,14 +86,33 @@ class LoginScreen extends StatelessWidget {
 
                 child: Column(
                   children: [
+                    Text(
+                      "Ingresa tu clave",
+                      style: TextStyle(
+                        color: const Color.fromARGB(255, 120, 30, 136),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: 33),
                     Container(
-                      height: 345,
+                      height: 216,
+                      // color: Colors.red,
                       child: GridView.count(
                         crossAxisCount: 3,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
-                        childAspectRatio: 1.6,
+                        childAspectRatio: 2.15,
                         children: items,
+                      ),
+                    ),
+                    SizedBox(height: 30),
+                    Text(
+                      "¿OLVIDASTE TU CLAVE?",
+                      style: TextStyle(
+                        color: const Color.fromARGB(255, 32, 213, 168),
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
