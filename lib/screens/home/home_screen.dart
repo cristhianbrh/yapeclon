@@ -64,7 +64,8 @@ class HomeScreen extends StatelessWidget {
                     child: Container(
                       height: 50,
                       child: ElevatedButton(
-                        onPressed: () => {},
+                        onPressed:
+                            () => {Navigator.pushNamed(context, "/login")},
                         child: Text(
                           'Ingresar',
                           style: TextStyle(color: Colors.white, fontSize: 16),
@@ -84,7 +85,10 @@ class HomeScreen extends StatelessWidget {
                     child: Container(
                       height: 50,
                       child: ElevatedButton(
-                        onPressed: () => {},
+                        onPressed:
+                            () => {
+                              Navigator.pushNamed(context, "/crear-cuenta"),
+                            },
                         child: Text(
                           'Crear Cuenta',
                           style: TextStyle(fontSize: 16, color: Colors.white),
