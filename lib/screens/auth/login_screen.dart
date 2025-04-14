@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/mdi.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final List<Widget> items = List.generate(
-      11,
-      (index) => ElevatedButton(
-        onPressed: () => {},
-        style: ElevatedButton.styleFrom(
-          minimumSize: Size(10, 10),
-          backgroundColor: const Color.fromARGB(18, 49, 49, 49),
-          padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
-          elevation: 0,
-        ),
+    final List<Widget> items = List.generate(12, (index) {
+      if (index == 9) {
+        return SizedBox.shrink();
+      } else if (index == 11) {
+        return _buildButtonLogin(
+          onPressed: () {},
+          isIcon: true,
+          icon: const Iconify(
+            Mdi.clear,
+            size: 28,
+            color: Color.fromARGB(60, 0, 0, 0),
+          ),
+          bgColor: Colors.transparent,
+        );
+      }
 
-        child: Center(
-          child: Text("1", style: TextStyle(fontSize: 23, color: Colors.black)),
-        ),
-      ),
-    );
+      return _buildButtonLogin(label: '${index + 1}', onPressed: () => {});
+    });
 
     return Scaffold(
       // appBar: AppBar(title: Text('Inicio')),
@@ -156,6 +159,34 @@ Widget _ButtonHelp() {
           Text("Ayuda", style: TextStyle(fontSize: 16, color: Colors.white)),
         ],
       ),
+    ),
+  );
+}
+
+Widget _buildButtonLogin({
+  String? label,
+  VoidCallback? onPressed,
+  bool isIcon = false,
+  Iconify? icon,
+  Color? bgColor,
+}) {
+  return ElevatedButton(
+    onPressed: onPressed,
+    style: ElevatedButton.styleFrom(
+      minimumSize: const Size(10, 10),
+      backgroundColor: bgColor ?? const Color.fromARGB(18, 49, 49, 49),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+      elevation: 0,
+    ),
+    child: Center(
+      child:
+          isIcon
+              ? icon ?? const SizedBox()
+              : Text(
+                label ?? '',
+                style: const TextStyle(fontSize: 23, color: Colors.black),
+              ),
     ),
   );
 }
