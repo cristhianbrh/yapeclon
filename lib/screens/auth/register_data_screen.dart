@@ -32,7 +32,9 @@ class RegisterDataScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 20),
                       ElevatedButton(
-                        onPressed: () => {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, "/crear-clave");
+                        },
                         child: Text(
                           "Continuar",
                           style: TextStyle(color: Colors.white),
