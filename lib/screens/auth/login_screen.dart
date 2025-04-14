@@ -162,7 +162,7 @@ Widget _ButtonHelp() {
             color: Colors.white,
           ),
           SizedBox(width: 4), // separación entre ícono y texto
-          Text("Ayuda", style: TextStyle(fontSize: 16, color: Colors.white)),
+          Text("Ayuda", style: TextStyle(fontSize: 14, color: Colors.white)),
         ],
       ),
     ),
