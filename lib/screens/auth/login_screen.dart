@@ -3,7 +3,13 @@ import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:iconify_flutter/icons/teenyicons.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  String password = "";
   @override
   Widget build(BuildContext context) {
     final List<Widget> items = List.generate(12, (index) {
@@ -11,7 +17,13 @@ class LoginScreen extends StatelessWidget {
         return SizedBox.shrink();
       } else if (index == 11) {
         return _buildButtonLogin(
-          onPressed: () {},
+          onPressed: () {
+            if (password.isNotEmpty) {
+              setState(() {
+                password = password.substring(0, password.length - 1);
+              });
+            }
+          },
           isIcon: true,
           icon: const Iconify(
             Mdi.clear,
@@ -22,7 +34,24 @@ class LoginScreen extends StatelessWidget {
         );
       }
 
-      return _buildButtonLogin(label: '${index + 1}', onPressed: () => {});
+      return _buildButtonLogin(
+        label: '${index + 1}',
+        onPressed: () {
+          if (password.length <= 5) {
+            setState(() {
+              password += (index + 1).toString();
+            });
+          }
+
+          if (password == "12345") {
+            setState(() {
+              password = "";
+            });
+            Navigator.pushNamed(context, "/house");
+          }
+          print(password);
+        },
+      );
     });
 
     return Scaffold(
@@ -90,14 +119,16 @@ class LoginScreen extends StatelessWidget {
 
                 child: Column(
                   children: [
-                    Text(
-                      "Ingresa tu clave",
-                      style: TextStyle(
-                        color: const Color.fromARGB(255, 120, 30, 136),
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    password.length == 0
+                        ? Text(
+                          "Ingresa tu clave",
+                          style: TextStyle(
+                            color: const Color.fromARGB(255, 120, 30, 136),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )
+                        : _buildIndicatorPasswordLength(password),
                     SizedBox(height: 33),
                     Container(
                       height: 216,
@@ -194,5 +225,23 @@ Widget _buildButtonLogin({
                 style: const TextStyle(fontSize: 23, color: Colors.black),
               ),
     ),
+  );
+}
+
+Widget _buildIndicatorPasswordLength(String password) {
+  return Row(
+    mainAxisSize: MainAxisSize.min,
+    spacing: 15,
+    children: [
+      for (var i = 1; i <= 6; i++)
+        (Container(
+          height: i <= password.length ? 13 : 10,
+          width: i <= password.length ? 13 : 10,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: i <= password.length ? Colors.tealAccent : Colors.grey[300],
+          ),
+        )),
+    ],
   );
 }
