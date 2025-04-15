@@ -10,6 +10,13 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   String password = "";
+  List<int> numeros = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  @override
+  void initState() {
+    super.initState();
+    numeros.shuffle(); // Ahora sí es válido
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> items = List.generate(12, (index) {
@@ -35,21 +42,38 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       return _buildButtonLogin(
-        label: '${index + 1}',
+        label: '${numeros[index < 9 ? index : 9]}',
         onPressed: () {
-          if (password.length <= 5) {
-            setState(() {
-              password += (index + 1).toString();
-            });
-          }
+          if (password.length < 6) {
+            // Agregar número al password y luego evaluar
+            String nuevoPassword =
+                password + numeros[index < 9 ? index : 9].toString();
 
-          if (password == "12345") {
             setState(() {
-              password = "";
+              password = nuevoPassword;
             });
-            Navigator.pushNamed(context, "/house");
+
+            if (nuevoPassword == "123456") {
+              // Si es correcto, navegar y resetear después
+              Navigator.pushNamed(context, "/house");
+              Future.delayed(Duration(milliseconds: 100), () {
+                setState(() {
+                  password = "";
+                  numeros.shuffle();
+                });
+              });
+            } else if (nuevoPassword.length >= 6) {
+              // Si no es correcto pero ya hay 6 dígitos, reiniciar
+              Future.delayed(Duration(milliseconds: 100), () {
+                setState(() {
+                  password = "";
+                  numeros.shuffle();
+                });
+              });
+            }
+
+            print(nuevoPassword);
           }
-          print(password);
         },
       );
     });
