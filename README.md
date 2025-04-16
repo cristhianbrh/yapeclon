@@ -1,16 +1,29 @@
-# yapeclon
+# Clon de Yape - Proyecto Universitario
 
-A new Flutter project.
+Este proyecto es un **clon de la aplicación Yape**, desarrollado como parte de un curso universitario por estudiantes del **último ciclo de la carrera de Ingeniería de Sistemas Computacionales**.
 
-## Getting Started
+## Objetivo
 
-This project is a starting point for a Flutter application.
+El objetivo de este proyecto es **replicar el diseño y funcionalidades básicas** de Yape para fines **netamente académicos y de aprendizaje**, explorando aspectos como:
 
-A few resources to get you started if this is your first Flutter project:
+- Diseño de interfaces móviles
+- Integración de funcionalidades de pago simuladas
+- Arquitectura de aplicaciones móviles
+- Seguridad básica en apps financieras
+- Experiencia de usuario (UX)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Importante
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+> ⚠️ **Este proyecto es únicamente para fines educativos.**
+>
+> No representa una aplicación oficial ni tiene conexión alguna con el verdadero Yape o el Banco de Crédito del Perú (BCP).
+>
+> **No nos responsabilizamos por cualquier uso indebido, fraudulento o fuera del entorno académico** que pueda realizarse con este código o sus derivados.
+
+## Licencia
+
+Este proyecto se entrega sin garantía alguna, bajo una licencia educativa. Su uso está restringido a actividades de formación universitaria.
+
+---
+
+**Desarrollado por estudiantes del último ciclo de Ingeniería de Sistemas Computacionales.**
