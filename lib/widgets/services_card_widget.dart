@@ -5,7 +5,7 @@ class ServicesCardWidget extends StatelessWidget {
   final List<ServiceCard> _servicesCard = [
     ServiceCard(page: "/", name: "Recargar celular"),
     ServiceCard(page: "/", name: "Yapear servicios"),
-    ServiceCard(page: "/", name: "Promos"),
+    ServiceCard(page: "/", name: "Promos           "),
     ServiceCard(page: "/", name: "Código de aprobación"),
     ServiceCard(page: "/", name: "Créditos"),
     ServiceCard(page: "/", name: "Tienda"),
