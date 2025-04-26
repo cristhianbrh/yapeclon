@@ -1,16 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/ep.dart';
+import 'package:iconify_flutter/icons/fluent_emoji_high_contrast.dart';
+import 'package:iconify_flutter/icons/fluent_mdl2.dart';
+import 'package:iconify_flutter/icons/ic.dart';
 import 'package:yapeclon/models/ServiceCard.dart';
 
 class ServicesCardWidget extends StatelessWidget {
   final List<ServiceCard> _servicesCard = [
-    ServiceCard(page: "/", name: "Recargar celular"),
-    ServiceCard(page: "/", name: "Yapear servicios"),
-    ServiceCard(page: "/", name: "Promos           "),
-    ServiceCard(page: "/", name: "Código de aprobación"),
-    ServiceCard(page: "/", name: "Créditos"),
-    ServiceCard(page: "/", name: "Tienda"),
-    ServiceCard(page: "/", name: "Dólares"),
-    ServiceCard(page: "/", name: "Ver todos"),
+    ServiceCard(
+      page: "/",
+      name: "Recargar celular",
+      icon: FluentMdl2.chrome_full_screen,
+    ),
+    ServiceCard(
+      page: "/",
+      name: "Yapear servicios",
+      icon: FluentEmojiHighContrast.droplet,
+    ),
+    ServiceCard(page: "/", name: "Promos", icon: Ep.promotion),
+    ServiceCard(page: "/", name: "Código de aprobación", icon: Ic.outline_lock),
+    ServiceCard(
+      page: "/",
+      name: "Créditos",
+      icon: FluentMdl2.chrome_full_screen,
+    ),
+    ServiceCard(page: "/", name: "Tienda", icon: FluentMdl2.chrome_full_screen),
+    ServiceCard(
+      page: "/",
+      name: "Dólares",
+      icon: FluentMdl2.chrome_full_screen,
+    ),
+    ServiceCard(
+      page: "/",
+      name: "Ver todos",
+      icon: FluentMdl2.chrome_full_screen,
+    ),
   ];
 
   @override
@@ -51,11 +76,16 @@ class ServicesCardWidget extends StatelessWidget {
               color: Colors.white,
             ),
             child: Center(
-              child: Icon(
-                Icons.notifications_none,
-                color: Colors.black,
+              child: Iconify(
+                serviceCurrent.icon,
                 size: 22,
+                color: Colors.black,
               ),
+              // Icon(
+              //   Icons.notifications_none,
+              //   color: Colors.black,
+              //   size: 22,
+              // ),
             ),
           ),
           SizedBox(height: 4),
@@ -69,6 +99,7 @@ class ServicesCardWidget extends StatelessWidget {
             textAlign: TextAlign.center,
             softWrap: true,
           ),
+          Expanded(child: Container()),
         ],
       ),
     );
