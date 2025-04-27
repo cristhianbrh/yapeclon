@@ -9,6 +9,7 @@ class HouseScreen extends StatefulWidget {
 
 class _HouseScreenState extends State<HouseScreen> {
   bool _viewSaldo = false;
+  bool _viewMovements = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,7 +124,6 @@ class _HouseScreenState extends State<HouseScreen> {
                   ),
                 ),
                 Container(
-                  height: 50,
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -137,24 +137,92 @@ class _HouseScreenState extends State<HouseScreen> {
                       ),
                     ],
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
                     children: [
-                      Row(
-                        spacing: 8,
-                        children: [
-                          Icon(Icons.filter_list, color: Colors.purple),
-                          Text(
-                            "Mostrar movimientos",
-                            style: TextStyle(
-                              color: const Color.fromARGB(255, 120, 30, 136),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                      ElevatedButton(
+                        onPressed:
+                            () => {
+                              setState(() {
+                                _viewMovements = !_viewMovements;
+                              }),
+                            },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor:
+                              Colors.transparent, // <-- quitar la sombra
+                          surfaceTintColor:
+                              Colors
+                                  .transparent, // <-- quitar el efecto de elevación
+                          splashFactory:
+                              NoSplash
+                                  .splashFactory, // <-- quitar el splash de clic
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 0,
+                            vertical: 0,
+                          ), // control del espacio interno
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide.none,
+                          ),
+                          elevation: 0,
+                          tapTargetSize:
+                              MaterialTapTargetSize
+                                  .shrinkWrap, // <-- evita que se expanda más de lo necesario
+                          minimumSize: Size(
+                            0,
+                            0,
+                          ), // <-- para permitir que el botón se achique
+                        ).copyWith(
+                          overlayColor: WidgetStateProperty.all(
+                            Colors.transparent,
+                          ),
+                        ),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 12),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                spacing: 8,
+                                children: [
+                                  Icon(Icons.filter_list, color: Colors.purple),
+                                  Text(
+                                    "Mostrar movimientos",
+                                    style: TextStyle(
+                                      color: const Color.fromARGB(
+                                        255,
+                                        120,
+                                        30,
+                                        136,
+                                      ),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Icon(
+                                Icons.expand_more,
+                                color: Colors.black26,
+                                size: 30,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      if (_viewMovements)
+                        Container(
+                          height: 140,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                _movementWidget(),
+                                _movementWidget(),
+                                _movementWidget(),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                      Icon(Icons.expand_more, color: Colors.black26, size: 30),
+                        ),
                     ],
                   ),
                 ),
@@ -205,6 +273,46 @@ class _HouseScreenState extends State<HouseScreen> {
       ),
     );
   }
+}
+
+Widget _movementWidget() {
+  return Container(
+    padding: EdgeInsetsDirectional.symmetric(vertical: 10),
+    child: Row(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Ronald Chaupe S.",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 17,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            Text(
+              "23 abr. 2025 - 9:02 pm",
+              style: TextStyle(
+                color: Colors.black45,
+                fontSize: 17,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+        Expanded(child: Container()),
+        Text(
+          "- S/ 5.40",
+          style: TextStyle(
+            color: Colors.redAccent,
+            fontSize: 17,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 Widget _topHeaderHouse() {
