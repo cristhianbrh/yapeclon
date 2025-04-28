@@ -236,7 +236,9 @@ class _HouseScreenState extends State<HouseScreen> {
 
               children: [
                 ElevatedButton.icon(
-                  onPressed: () => {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/scanner");
+                  },
                   icon: Icon(Icons.qr_code, color: Color(0xFF0FCBB3), size: 25),
                   label: Text(
                     'ESCANEAR QR',
