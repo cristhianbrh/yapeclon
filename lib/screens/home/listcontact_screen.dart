@@ -15,7 +15,7 @@ class ListcontactScreen extends StatelessWidget {
         child: Column(
           // Usar Column en lugar de SingleChildScrollView para evitar el error
           children: [
-            _topHeader(),
+            _topHeader(context),
             _headerPageView(),
             SizedBox(height: 20),
             Container(
@@ -36,6 +36,7 @@ class ListcontactScreen extends StatelessWidget {
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: 10,
                 children: [
                   Iconify(Subway.search, color: Colors.black26),
                   Expanded(
@@ -62,18 +63,18 @@ class ListcontactScreen extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 25),
                   child: Column(
                     children: [
-                      _ContactView(),
-                      _ContactView(),
-                      _ContactView(),
-                      _ContactView(),
-                      _ContactView(),
-                      _ContactView(),
-                      _ContactView(),
-                      _ContactView(),
-                      _ContactView(),
-                      _ContactView(),
-                      _ContactView(),
-                      _ContactView(),
+                      _ContactView(context),
+                      _ContactView(context),
+                      _ContactView(context),
+                      _ContactView(context),
+                      _ContactView(context),
+                      _ContactView(context),
+                      _ContactView(context),
+                      _ContactView(context),
+                      _ContactView(context),
+                      _ContactView(context),
+                      _ContactView(context),
+                      _ContactView(context),
                     ],
                   ),
                 ),
@@ -85,16 +86,21 @@ class ListcontactScreen extends StatelessWidget {
     );
   }
 
-  Widget _topHeader() {
+  Widget _topHeader(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
       child: Row(
         spacing: 20,
         children: [
-          Iconify(
-            MaterialSymbols.close_rounded,
-            color: Colors.black45,
-            size: 30,
+          IconButton(
+            icon: Iconify(
+              MaterialSymbols.close_rounded,
+              color: Colors.black45,
+              size: 30,
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, "/house");
+            },
           ),
           Text(
             "Yapear",
@@ -169,29 +175,43 @@ class ListcontactScreen extends StatelessWidget {
     );
   }
 
-  Widget _ContactView() {
+  Widget _ContactView(context) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.black12, width: 1)),
       ),
       padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Text(
-            "100 Soles Probl",
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "100 Soles Probl",
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+              ),
+              Text(
+                "955 274 602",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black38,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              SizedBox(height: 10),
+            ],
           ),
-          Text(
-            "955 274 602",
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.black38,
-              fontWeight: FontWeight.w400,
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () {
+                // Aquí colocas lo que debe pasar al hacer clic
+                Navigator.pushNamed(context, "/yapear");
+              },
+              behavior: HitTestBehavior.translucent,
+              child: Container(), // Invisible
             ),
           ),
-          SizedBox(height: 10),
         ],
       ),
     );
