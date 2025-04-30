@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/gridicons.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 class ScannerScreen extends StatefulWidget {
@@ -35,32 +37,35 @@ class _ScannerScreenState extends State<ScannerScreen> {
           width: double.infinity,
           height: double.infinity,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color.fromARGB(255, 148, 102, 168), Color(0xFF720e9e)],
-            ),
+            // gradient: LinearGradient(
+            //   begin: Alignment.topCenter,
+            //   end: Alignment.bottomCenter,
+            //   colors: [Color.fromARGB(255, 148, 102, 168), Color(0xFF720e9e)],
+            // ),
+            color: Colors.transparent,
           ),
-          child: Column(
-            children: <Widget>[
-              Expanded(flex: 4, child: _buildQrView(context)),
-              Expanded(
-                flex: 1,
-                child: FittedBox(
-                  fit: BoxFit.contain,
+          child: Stack(
+            children: [
+              Positioned.fill(child: _buildQrView(context)),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  width: double.infinity,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      if (result != null)
-                        Text(
-                          // 'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}',
-                          'Barcode Type:    Data: ${result!.code}',
-                        )
-                      else
-                        const Text('Scan a code'),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                      // if (result != null)
+                      //   Text(
+                      //     'Barcode Type:    Data: ${result!.code}',
+                      //     style: TextStyle(color: Colors.white),
+                      //   )
+                      // else
+                      //   const Text(
+                      //     'Scan a code',
+                      //     style: TextStyle(color: Colors.white),
+                      //   ),
+                      Column(
                         children: <Widget>[
                           Container(
                             margin: const EdgeInsets.all(8),
@@ -69,62 +74,53 @@ class _ScannerScreenState extends State<ScannerScreen> {
                                 await controller?.toggleFlash();
                                 setState(() {});
                               },
-                              child: FutureBuilder(
-                                future: controller?.getFlashStatus(),
-                                builder: (context, snapshot) {
-                                  return Text('Flash: ${snapshot.data}');
-                                },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white60,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: const Text(
+                                'Encender linterna',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                ),
                               ),
                             ),
                           ),
                           Container(
+                            height: 65,
+                            width:
+                                double
+                                    .infinity, // Esto hace que ocupe todo el ancho
                             margin: const EdgeInsets.all(8),
                             child: ElevatedButton(
                               onPressed: () async {
-                                await controller?.flipCamera();
+                                await controller?.toggleFlash();
                                 setState(() {});
                               },
-                              child: FutureBuilder(
-                                future: controller?.getCameraInfo(),
-                                builder: (context, snapshot) {
-                                  if (snapshot.data != null) {
-                                    return Text(
-                                      'Camera facing ${describeEnum(snapshot.data!)}',
-                                    );
-                                  } else {
-                                    return const Text('loading');
-                                  }
-                                },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            margin: const EdgeInsets.all(8),
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                await controller?.pauseCamera();
-                              },
-                              child: const Text(
-                                'pause',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.all(8),
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                await controller?.resumeCamera();
-                              },
-                              child: const Text(
-                                'resume',
-                                style: TextStyle(fontSize: 20),
+                              child: Row(
+                                spacing: 10,
+                                children: [
+                                  Iconify(
+                                    Gridicons.add_image,
+                                    color: Colors.purpleAccent,
+                                  ),
+                                  Text(
+                                    'Subir una imagen con QR',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
