@@ -1,4 +1,6 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:yapeclon/firebase_options.dart';
 import 'package:yapeclon/screens/auth/create_account_screen.dart';
 import 'package:yapeclon/screens/auth/create_password_screen.dart';
 import 'package:yapeclon/screens/auth/login_screen.dart';
@@ -11,7 +13,9 @@ import 'package:yapeclon/screens/home/options_creen.dart';
 import 'package:yapeclon/screens/home/scanner_screen.dart';
 import 'package:yapeclon/screens/home/yapear_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MyApp());
 }
 

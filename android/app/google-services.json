@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "975182614277",
+    "project_id": "yapeclon-23dd2",
+    "storage_bucket": "yapeclon-23dd2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:975182614277:android:2b6c743cbc48c52aa4716c",
+        "android_client_info": {
+          "package_name": "com.example.yapeclon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBf0ThYcpTr8qvv3gHPb3xGNy4CvgWckDw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

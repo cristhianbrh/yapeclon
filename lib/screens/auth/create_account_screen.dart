@@ -2,7 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/ooui.dart';
 
-class CreateAccountScreen extends StatelessWidget {
+class CreateAccountScreen extends StatefulWidget {
+  @override
+  _CreateAccountScreenState createState() => _CreateAccountScreenState();
+}
+
+class _CreateAccountScreenState extends State<CreateAccountScreen> {
+  final TextEditingController _phoneController = TextEditingController();
+
+  @override
+  void dispose() {
+    _phoneController.dispose(); // buena práctica para liberar recursos
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +38,7 @@ class CreateAccountScreen extends StatelessWidget {
                       _buildTextField(
                         "Número de celular",
                         TextInputType.phone,
+                        _phoneController,
                         "999 999 999",
                       ),
                       SizedBox(height: 20),
@@ -105,7 +119,12 @@ Widget _buildDropdownField() {
   );
 }
 
-Widget _buildTextField(String label, TextInputType inputType, [String? hint]) {
+Widget _buildTextField(
+  String label,
+  TextInputType inputType,
+  TextEditingController controller, [
+  String? hint,
+]) {
   return Column(
     spacing: 0,
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,6 +141,7 @@ Widget _buildTextField(String label, TextInputType inputType, [String? hint]) {
       ),
       TextField(
         keyboardType: inputType,
+        controller: controller,
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: TextStyle(
