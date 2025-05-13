@@ -10,6 +10,7 @@ plugins {
 
 android {
     namespace = "com.example.yapeclon"
+    
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "28.0.13004108"
     // ndkVersion = flutter.ndkVersion

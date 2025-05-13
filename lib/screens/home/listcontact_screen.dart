@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/material_symbols.dart';
 import 'package:iconify_flutter/icons/subway.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ListcontactScreen extends StatefulWidget {
   const ListcontactScreen({super.key});
@@ -11,33 +13,24 @@ class ListcontactScreen extends StatefulWidget {
 }
 
 class _ListcontactScreenState extends State<ListcontactScreen> {
-  // List<Contact> _contacts = [];
+  List<Contact> _contacts = [];
 
   @override
   void initState() {
     super.initState();
-    // _getContacts();
+    _getContacts();
   }
 
-  // Future<void> _getContacts() async {
-  //   // Solicita permiso
-  //   PermissionStatus permissionStatus = await Permission.contacts.status;
-  //   if (!permissionStatus.isGranted) {
-  //     permissionStatus = await Permission.contacts.request();
-  //   }
-
-  //   // Si fue concedido, carga los contactos
-  //   if (permissionStatus.isGranted) {
-  //     Iterable<Contact> contacts = await ContactsService.getContacts();
-  //     setState(() {
-  //       _contacts = contacts.toList();
-  //     });
-  //     print(_contacts);
-  //   } else {
-  //     // Permiso denegado
-  //     print("Permiso denegado para leer contactos.");
-  //   }
-  // }
+  Future<void> _getContacts() async {
+    if (await FlutterContacts.requestPermission()) {
+      final contacts = await FlutterContacts.getContacts(withProperties: true);
+      setState(() {
+        _contacts = contacts;
+      });
+    } else {
+      print("Permiso denegado para leer contactos.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,20 +87,10 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 25),
                   child: Column(
-                    children: [
-                      _ContactView(context),
-                      _ContactView(context),
-                      _ContactView(context),
-                      _ContactView(context),
-                      _ContactView(context),
-                      _ContactView(context),
-                      _ContactView(context),
-                      _ContactView(context),
-                      _ContactView(context),
-                      _ContactView(context),
-                      _ContactView(context),
-                      _ContactView(context),
-                    ],
+                    children:
+                        _contacts
+                            .map((contact) => _ContactView(contact, context))
+                            .toList(),
                   ),
                 ),
               ),
@@ -207,7 +190,7 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
     );
   }
 
-  Widget _ContactView(context) {
+  Widget _ContactView(Contact contact, context) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -220,11 +203,11 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "100 Soles Probl",
+                contact.displayName,
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
               ),
               Text(
-                "955 274 602",
+                contact.phones.isNotEmpty ? contact.phones.first.number : '',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.black38,
