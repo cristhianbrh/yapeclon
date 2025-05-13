@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:iconify_flutter/icons/teenyicons.dart';
+import 'package:yapeclon/data/models/user_model.dart';
+import 'package:yapeclon/data/services/firestore_service.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -19,6 +23,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final email = ModalRoute.of(context)!.settings.arguments.toString();
+    final FirestoreService fs = FirestoreService();
+
     final List<Widget> items = List.generate(12, (index) {
       if (index == 9) {
         return SizedBox.shrink();
@@ -43,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       return _buildButtonLogin(
         label: '${numeros[index < 9 ? index : 9]}',
-        onPressed: () {
+        onPressed: () async {
           if (password.length < 6) {
             // Agregar número al password y luego evaluar
             String nuevoPassword =
@@ -53,9 +60,16 @@ class _LoginScreenState extends State<LoginScreen> {
               password = nuevoPassword;
             });
 
-            if (nuevoPassword == "123456") {
+            final userCurrent = await fs.getUserByEmailAndPassword(
+              email,
+              password,
+            );
+
+            // if (nuevoPassword == "123456") {
+            if (userCurrent != null) {
               // Si es correcto, navegar y resetear después
-              Navigator.pushNamed(context, "/house");
+
+              Navigator.pushNamed(context, "/house", arguments: userCurrent);
               Future.delayed(Duration(milliseconds: 100), () {
                 setState(() {
                   password = "";

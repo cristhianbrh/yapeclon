@@ -114,7 +114,7 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
               size: 30,
             ),
             onPressed: () {
-              Navigator.pushNamed(context, "/house");
+              Navigator.pop(context);
             },
           ),
           Text(

@@ -158,7 +158,13 @@ class _LoginEmailScreenState extends State<LoginEmailScreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed:
-                              () => {Navigator.pushNamed(context, "/login")},
+                              () => {
+                                Navigator.pushNamed(
+                                  context,
+                                  "/login",
+                                  arguments: _emailDocController.text,
+                                ),
+                              },
                           child: Text(
                             'Continuar',
                             style: TextStyle(

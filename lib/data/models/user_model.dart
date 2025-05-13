@@ -4,6 +4,8 @@ class UserModel {
   final String document;
   final String email;
   final String password;
+  final String fullName;
+  final double money;
 
   UserModel({
     required this.phone,
@@ -11,6 +13,8 @@ class UserModel {
     required this.document,
     required this.email,
     required this.password,
+    required this.fullName,
+    this.money = 0.0,
   });
 
   /// Convierte un objeto UserModel a un Map para Firestore
@@ -20,6 +24,8 @@ class UserModel {
     'document': document,
     'email': email,
     'password': password,
+    'full_name': fullName,
+    'money': money,
   };
 
   /// Crea un UserModel desde un Map de Firestore
@@ -29,5 +35,7 @@ class UserModel {
     document: map['document'] ?? '',
     email: map['email'] ?? '',
     password: map['password'] ?? '',
+    fullName: map['full_name'] ?? '',
+    money: (map['money'] ?? 0).toDouble(),
   );
 }

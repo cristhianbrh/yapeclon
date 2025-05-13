@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yapeclon/data/models/user_model.dart';
 import 'package:yapeclon/widgets/services_card_widget.dart';
 import 'package:yapeclon/widgets/slider_widget.dart';
 
@@ -12,6 +13,8 @@ class _HouseScreenState extends State<HouseScreen> {
   bool _viewMovements = false;
   @override
   Widget build(BuildContext context) {
+    final userData = ModalRoute.of(context)!.settings.arguments as UserModel;
+
     return Scaffold(
       // appBar: AppBar(title: Text('Inicio')),
       body: SafeArea(
@@ -27,10 +30,10 @@ class _HouseScreenState extends State<HouseScreen> {
           ),
           child: Column(
             children: [
-              _topHeaderHouse(),
+              _topHeaderHouse(userData),
               ServicesCardWidget(),
               SliderWidget(),
-              _contentBodyHouse(),
+              _contentBodyHouse(userData),
             ],
           ),
         ),
@@ -38,7 +41,7 @@ class _HouseScreenState extends State<HouseScreen> {
     );
   }
 
-  Widget _contentBodyHouse() {
+  Widget _contentBodyHouse(UserModel user) {
     return Expanded(
       child: Container(
         padding: EdgeInsets.all(15),
@@ -111,8 +114,7 @@ class _HouseScreenState extends State<HouseScreen> {
                         Expanded(child: Container()),
                         if (_viewSaldo)
                           Text(
-                            "S/ "
-                            "7.51",
+                            "S/ " + user.money.toString(),
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 16,
@@ -319,7 +321,7 @@ Widget _movementWidget() {
   );
 }
 
-Widget _topHeaderHouse() {
+Widget _topHeaderHouse(UserModel user) {
   return Container(
     padding: EdgeInsets.fromLTRB(12, 5, 12, 5),
     child: Row(
@@ -337,7 +339,7 @@ Widget _topHeaderHouse() {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Hola, Cristhian A...",
+                    "Hola, " + user.fullName.substring(0, 9) + "...",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 15,

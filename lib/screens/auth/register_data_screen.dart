@@ -10,6 +10,7 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
   final TextEditingController _typeDocController = TextEditingController();
   final TextEditingController _documentController = TextEditingController();
   final TextEditingController _emailDocController = TextEditingController();
+  final TextEditingController _fullNames = TextEditingController();
   String? _selectedDocumentType;
 
   @override
@@ -46,6 +47,13 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
                         "nombre@gmail.com",
                       ),
                       SizedBox(height: 20),
+                      _buildTextField(
+                        "Nombres y apellidos",
+                        TextInputType.name,
+                        _fullNames,
+                        "Cristhian Addmer ...",
+                      ),
+                      SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
                           // Crear el objeto con los datos
@@ -56,6 +64,7 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
                             document: _documentController.text,
                             email: _emailDocController.text,
                             phone: phone,
+                            fullName: _fullNames.text,
                             password: "00000",
                           );
 

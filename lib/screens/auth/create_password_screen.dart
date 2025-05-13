@@ -63,11 +63,12 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                 email: userData.email,
                 phone: userData.phone,
                 password: password,
+                fullName: userData.fullName,
               );
               FirestoreService fs = FirestoreService();
               fs.addUser(newUser);
 
-              Navigator.pushNamed(context, "/house");
+              Navigator.pushNamed(context, "/house", arguments: newUser);
               Future.delayed(Duration(milliseconds: 100), () {
                 setState(() {
                   password = "";
