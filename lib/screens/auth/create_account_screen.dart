@@ -66,7 +66,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, "/registrar-datos");
+                          Navigator.pushNamed(
+                            context,
+                            "/registrar-datos",
+                            arguments: _phoneController,
+                          );
                         },
                         child: Text(
                           "Continuar",
