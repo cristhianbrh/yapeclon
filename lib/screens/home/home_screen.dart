@@ -64,7 +64,9 @@ class HomeScreen extends StatelessWidget {
                       height: 50,
                       child: ElevatedButton(
                         onPressed:
-                            () => {Navigator.pushNamed(context, "/login")},
+                            () => {
+                              Navigator.pushNamed(context, "/login-email"),
+                            },
                         child: Text(
                           'Ingresar',
                           style: TextStyle(color: Colors.white, fontSize: 16),
