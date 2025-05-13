@@ -1,20 +1,18 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:iconify_flutter/icons/teenyicons.dart';
-import 'package:yapeclon/data/models/user_model.dart';
-import 'package:yapeclon/data/services/firestore_service.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginEmailScreen extends StatefulWidget {
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginEmailScreen> createState() => _LoginEmailScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginEmailScreenState extends State<LoginEmailScreen> {
   String password = "";
   List<int> numeros = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  final TextEditingController _emailDocController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -23,9 +21,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final email = ModalRoute.of(context)!.settings.arguments.toString();
-    final FirestoreService fs = FirestoreService();
-
     final List<Widget> items = List.generate(12, (index) {
       if (index == 9) {
         return SizedBox.shrink();
@@ -50,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       return _buildButtonLogin(
         label: '${numeros[index < 9 ? index : 9]}',
-        onPressed: () async {
+        onPressed: () {
           if (password.length < 6) {
             // Agregar número al password y luego evaluar
             String nuevoPassword =
@@ -60,16 +55,9 @@ class _LoginScreenState extends State<LoginScreen> {
               password = nuevoPassword;
             });
 
-            final userCurrent = await fs.getUserByEmailAndPassword(
-              email,
-              password,
-            );
-
-            // if (nuevoPassword == "123456") {
-            if (userCurrent != null) {
+            if (nuevoPassword == "123456") {
               // Si es correcto, navegar y resetear después
-
-              Navigator.pushNamed(context, "/house", arguments: userCurrent);
+              Navigator.pushNamed(context, "/house");
               Future.delayed(Duration(milliseconds: 100), () {
                 setState(() {
                   password = "";
@@ -106,89 +94,96 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           child: Column(
             children: [
+              Container(
+                height: 150,
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                      'assets/images/icons/bg_yape_1.jpg',
+                    ), // Ruta a tu imagen
+                    fit: BoxFit.cover, // Puedes usar cover, contain, fill, etc.
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.centerRight,
+                      child: _ButtonHelp(),
+                    ),
+                  ],
+                ),
+              ),
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                  padding: EdgeInsets.only(
+                    left: 20,
+                    bottom: 20,
+                    right: 20,
+                    top: 33,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color.fromARGB(61, 70, 70, 70),
+                        spreadRadius: 2,
+                        blurRadius: 6,
+                        offset: Offset(2, 3),
+                      ),
+                    ],
+                  ),
+
                   child: Column(
                     children: [
-                      Container(
-                        alignment: Alignment.centerRight,
-                        child: _ButtonHelp(),
+                      Text(
+                        "Ingresa a tu Yape",
+                        style: TextStyle(
+                          color: const Color.fromARGB(255, 120, 30, 136),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      Expanded(
-                        child: Center(
-                          child: Container(
-                            height: 150,
-                            width: 150,
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white,
+                      SizedBox(height: 50),
+                      _buildTextField(
+                        "Correo electrónico",
+                        TextInputType.emailAddress,
+                        _emailDocController,
+                        "nombre@gmail.com",
+                      ),
+                      SizedBox(height: 33),
+                      Container(
+                        height: 50,
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed:
+                              () => {
+                                Navigator.pushNamed(
+                                  context,
+                                  "/login",
+                                  arguments: _emailDocController.text,
+                                ),
+                              },
+                          child: Text(
+                            'Continuar',
+                            style: TextStyle(
+                              color: Colors.black38,
+                              fontSize: 16,
                             ),
-                            child: Image.asset(
-                              "assets/images/QR/IMG_LOGIN_QR.jpg",
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black12,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
                             ),
+                            elevation: 0,
+                            side: BorderSide.none,
                           ),
                         ),
                       ),
                     ],
                   ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.only(
-                  left: 20,
-                  bottom: 20,
-                  right: 20,
-                  top: 33,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color.fromARGB(61, 70, 70, 70),
-                      spreadRadius: 2,
-                      blurRadius: 6,
-                      offset: Offset(2, 3),
-                    ),
-                  ],
-                ),
-
-                child: Column(
-                  children: [
-                    password.length == 0
-                        ? Text(
-                          "Ingresa tu clave",
-                          style: TextStyle(
-                            color: const Color.fromARGB(255, 120, 30, 136),
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        )
-                        : _buildIndicatorPasswordLength(password),
-                    SizedBox(height: 33),
-                    Container(
-                      height: 216,
-                      // color: Colors.red,
-                      child: GridView.count(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        childAspectRatio: 2.15,
-                        children: items,
-                      ),
-                    ),
-                    SizedBox(height: 30),
-                    Text(
-                      "¿OLVIDASTE TU CLAVE?",
-                      style: TextStyle(
-                        color: const Color.fromARGB(255, 32, 213, 168),
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
                 ),
               ),
             ],
@@ -197,6 +192,41 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+}
+
+Widget _buildTextField(
+  String label,
+  TextInputType inputType,
+  TextEditingController controller, [
+  String? hint,
+]) {
+  return Column(
+    spacing: 0,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label,
+        style: TextStyle(
+          color: Color.fromARGB(62, 34, 34, 17),
+
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
+          letterSpacing: .1,
+        ),
+      ),
+      TextField(
+        keyboardType: inputType,
+        controller: controller,
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: TextStyle(
+            color: Color.fromARGB(62, 34, 34, 17),
+            fontSize: 12,
+          ),
+        ),
+      ),
+    ],
+  );
 }
 
 Widget _ButtonHelp() {
