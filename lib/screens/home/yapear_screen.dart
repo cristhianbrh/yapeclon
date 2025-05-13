@@ -199,7 +199,7 @@ class YapearScreen extends StatelessWidget {
           IconButton(
             icon: Iconify(Ph.caret_left_bold, color: Colors.black45, size: 30),
             onPressed: () {
-              Navigator.pushNamed(context, "/house");
+              Navigator.pop(context);
             },
           ),
           Expanded(
@@ -215,7 +215,7 @@ class YapearScreen extends StatelessWidget {
               size: 30,
             ),
             onPressed: () {
-              Navigator.pushNamed(context, "/house");
+              Navigator.pop(context);
             },
           ),
         ],
