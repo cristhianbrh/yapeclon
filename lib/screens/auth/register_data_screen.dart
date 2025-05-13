@@ -67,7 +67,7 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
                                 userData, // Enviar el objeto con los datos
                           );
 
-                          Navigator.pushNamed(context, "/crear-clave");
+                          // Navigator.pushNamed(context, "/crear-clave");
                         },
                         child: Text(
                           "Continuar",

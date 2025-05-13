@@ -1,27 +1,93 @@
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
+import 'package:yapeclon/data/models/user_model.dart';
+import 'package:yapeclon/data/services/firestore_service.dart';
 
-class CreatePasswordScreen extends StatelessWidget {
+class CreatePasswordScreen extends StatefulWidget {
+  @override
+  State<CreatePasswordScreen> createState() => _CreatePasswordScreenState();
+}
+
+class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
+  String password = "";
+  List<int> numeros = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  @override
+  void initState() {
+    super.initState();
+    numeros.shuffle(); // Ahora sí es válido
+  }
+
   @override
   Widget build(BuildContext context) {
+    final userData = ModalRoute.of(context)!.settings.arguments as UserModel;
+
     final List<Widget> items = List.generate(12, (index) {
       if (index == 9) {
         return SizedBox.shrink();
       } else if (index == 11) {
         return _buildButtonLogin(
-          onPressed: () {},
+          onPressed: () {
+            if (password.isNotEmpty) {
+              setState(() {
+                password = password.substring(0, password.length - 1);
+              });
+            }
+          },
           isIcon: true,
           icon: const Iconify(
             Mdi.clear,
             size: 28,
-            color: Color.fromARGB(193, 255, 254, 254),
+            color: Color.fromARGB(60, 0, 0, 0),
           ),
           bgColor: Colors.transparent,
         );
       }
+      return _buildButtonLogin(
+        label: '${numeros[index < 9 ? index : 9]}',
+        onPressed: () {
+          if (password.length < 6) {
+            // Agregar número al password y luego evaluar
+            String nuevoPassword =
+                password + numeros[index < 9 ? index : 9].toString();
 
-      return _buildButtonLogin(label: '${index + 1}', onPressed: () => {});
+            setState(() {
+              password = nuevoPassword;
+            });
+
+            if (nuevoPassword.length == 6) {
+              // Si es correcto, navegar y resetear después
+              UserModel newUser = UserModel(
+                typeDoc: userData.typeDoc,
+                document: userData.document,
+                email: userData.email,
+                phone: userData.phone,
+                password: password,
+              );
+              FirestoreService fs = FirestoreService();
+              fs.addUser(newUser);
+
+              Navigator.pushNamed(context, "/house");
+              Future.delayed(Duration(milliseconds: 100), () {
+                setState(() {
+                  password = "";
+                  numeros.shuffle();
+                });
+              });
+            } else if (nuevoPassword.length >= 6) {
+              // Si no es correcto pero ya hay 6 dígitos, reiniciar
+              Future.delayed(Duration(milliseconds: 100), () {
+                setState(() {
+                  password = "";
+                  numeros.shuffle();
+                });
+              });
+            }
+
+            print(nuevoPassword);
+          }
+        },
+      );
     });
 
     return Scaffold(
@@ -106,7 +172,24 @@ class CreatePasswordScreen extends StatelessWidget {
 
                 child: Column(
                   children: [
-                    Center(child: _buildIndicatorPasswordLength()),
+                    Center(
+                      child:
+                          password.length == 0
+                              ? Text(
+                                "Ingresa tu clave",
+                                style: TextStyle(
+                                  color: const Color.fromARGB(
+                                    255,
+                                    180,
+                                    164,
+                                    183,
+                                  ),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )
+                              : _buildIndicatorPasswordLength(password),
+                    ),
                     SizedBox(height: 15),
                     Container(
                       height: 275,
@@ -159,59 +242,20 @@ Widget _buildButtonLogin({
   );
 }
 
-Widget _buildIndicatorPasswordLength() {
+Widget _buildIndicatorPasswordLength(String password) {
   return Row(
     mainAxisSize: MainAxisSize.min,
     spacing: 15,
     children: [
-      Container(
-        height: 13,
-        width: 13,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.tealAccent,
-        ),
-      ),
-      Container(
-        height: 13,
-        width: 13,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.tealAccent,
-        ),
-      ),
-      Container(
-        height: 13,
-        width: 13,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.tealAccent,
-        ),
-      ),
-      Container(
-        height: 13,
-        width: 13,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.tealAccent,
-        ),
-      ),
-      Container(
-        height: 13,
-        width: 13,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.tealAccent,
-        ),
-      ),
-      Container(
-        height: 13,
-        width: 13,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.tealAccent,
-        ),
-      ),
+      for (var i = 1; i <= 6; i++)
+        (Container(
+          height: i <= password.length ? 13 : 10,
+          width: i <= password.length ? 13 : 10,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: i <= password.length ? Colors.tealAccent : Colors.grey[300],
+          ),
+        )),
     ],
   );
 }

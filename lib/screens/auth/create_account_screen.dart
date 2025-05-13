@@ -69,7 +69,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                           Navigator.pushNamed(
                             context,
                             "/registrar-datos",
-                            arguments: _phoneController,
+                            arguments: _phoneController.text,
                           );
                         },
                         child: Text(
