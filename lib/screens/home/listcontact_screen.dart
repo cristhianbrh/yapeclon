@@ -1,11 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
-import 'package:iconify_flutter/icons/gridicons.dart';
 import 'package:iconify_flutter/icons/material_symbols.dart';
 import 'package:iconify_flutter/icons/subway.dart';
 
-class ListcontactScreen extends StatelessWidget {
+class ListcontactScreen extends StatefulWidget {
   const ListcontactScreen({super.key});
+
+  @override
+  State<ListcontactScreen> createState() => _ListcontactScreenState();
+}
+
+class _ListcontactScreenState extends State<ListcontactScreen> {
+  // List<Contact> _contacts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // _getContacts();
+  }
+
+  // Future<void> _getContacts() async {
+  //   // Solicita permiso
+  //   PermissionStatus permissionStatus = await Permission.contacts.status;
+  //   if (!permissionStatus.isGranted) {
+  //     permissionStatus = await Permission.contacts.request();
+  //   }
+
+  //   // Si fue concedido, carga los contactos
+  //   if (permissionStatus.isGranted) {
+  //     Iterable<Contact> contacts = await ContactsService.getContacts();
+  //     setState(() {
+  //       _contacts = contacts.toList();
+  //     });
+  //     print(_contacts);
+  //   } else {
+  //     // Permiso denegado
+  //     print("Permiso denegado para leer contactos.");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
