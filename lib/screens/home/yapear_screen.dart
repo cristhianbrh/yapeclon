@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/contact.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/icon_park_outline.dart';
 import 'package:iconify_flutter/icons/icon_park_solid.dart';
 import 'package:iconify_flutter/icons/material_symbols.dart';
 import 'package:iconify_flutter/icons/mingcute.dart';
 import 'package:iconify_flutter/icons/ph.dart';
+import 'package:yapeclon/data/models/contact_user.dart';
 
-class YapearScreen extends StatelessWidget {
+class YapearScreen extends StatefulWidget {
   const YapearScreen({super.key});
 
   @override
+  State<YapearScreen> createState() => _YapearScreenState();
+}
+
+class _YapearScreenState extends State<YapearScreen> {
+  @override
   Widget build(BuildContext context) {
+    final contactUsers =
+        ModalRoute.of(context)!.settings.arguments as ContactUserArgs;
+
     return Scaffold(
       backgroundColor: Colors.purpleAccent,
       // appBar: AppBar(title: Text('Inicio')),
@@ -35,7 +45,7 @@ class YapearScreen extends StatelessWidget {
               //CODIFICA AQUÍ
               _topHeader(context),
               Text(
-                "Cristhian A. Bautista R.",
+                contactUsers.contact.displayName,
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 20,

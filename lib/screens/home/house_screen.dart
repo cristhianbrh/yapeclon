@@ -257,7 +257,11 @@ class _HouseScreenState extends State<HouseScreen> {
                 ),
                 ElevatedButton.icon(
                   onPressed: () {
-                    Navigator.pushNamed(context, "/listcontact");
+                    Navigator.pushNamed(
+                      context,
+                      "/listcontact",
+                      arguments: user,
+                    );
                   },
                   icon: Icon(Icons.send, color: Colors.white, size: 25),
                   label: Text(

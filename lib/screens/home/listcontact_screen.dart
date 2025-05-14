@@ -4,6 +4,8 @@ import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/material_symbols.dart';
 import 'package:iconify_flutter/icons/subway.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:yapeclon/data/models/contact_user.dart';
+import 'package:yapeclon/data/models/user_model.dart';
 
 class ListcontactScreen extends StatefulWidget {
   const ListcontactScreen({super.key});
@@ -34,6 +36,8 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userData = ModalRoute.of(context)!.settings.arguments as UserModel;
+
     return Scaffold(
       // appBar: AppBar(title: Text('Inicio')),
       body: SafeArea(
@@ -89,7 +93,10 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
                   child: Column(
                     children:
                         _contacts
-                            .map((contact) => _ContactView(contact, context))
+                            .map(
+                              (contact) =>
+                                  _ContactView(contact, userData, context),
+                            )
                             .toList(),
                   ),
                 ),
@@ -97,6 +104,52 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _ContactView(Contact contact, UserModel user, context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.black12, width: 1)),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Stack(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                contact.displayName,
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+              ),
+              Text(
+                contact.phones.isNotEmpty ? contact.phones.first.number : '',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black38,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              SizedBox(height: 10),
+            ],
+          ),
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () {
+                // Aquí colocas lo que debe pasar al hacer clic
+                Navigator.pushNamed(
+                  context,
+                  "/yapear",
+                  arguments: ContactUserArgs(contact: contact, user: user),
+                );
+              },
+              behavior: HitTestBehavior.translucent,
+              child: Container(), // Invisible
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -183,48 +236,6 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
                   textAlign: TextAlign.center,
                 ),
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _ContactView(Contact contact, context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.black12, width: 1)),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                contact.displayName,
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-              ),
-              Text(
-                contact.phones.isNotEmpty ? contact.phones.first.number : '',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black38,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              SizedBox(height: 10),
-            ],
-          ),
-          Positioned.fill(
-            child: GestureDetector(
-              onTap: () {
-                // Aquí colocas lo que debe pasar al hacer clic
-                Navigator.pushNamed(context, "/yapear");
-              },
-              behavior: HitTestBehavior.translucent,
-              child: Container(), // Invisible
             ),
           ),
         ],
