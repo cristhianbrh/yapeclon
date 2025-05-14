@@ -1,3 +1,5 @@
+import 'package:yapeclon/data/models/transaction_model.dart';
+
 class UserModel {
   final String phone;
   final String typeDoc;
@@ -6,6 +8,7 @@ class UserModel {
   final String password;
   final String fullName;
   final double money;
+  final List<TransactionModel> transactions;
 
   UserModel({
     required this.phone,
@@ -14,7 +17,8 @@ class UserModel {
     required this.email,
     required this.password,
     required this.fullName,
-    this.money = 0.0,
+    this.money = 50.0,
+    this.transactions = const [],
   });
 
   /// Convierte un objeto UserModel a un Map para Firestore
@@ -26,6 +30,7 @@ class UserModel {
     'password': password,
     'full_name': fullName,
     'money': money,
+    'transactions': transactions.map((t) => t.toMap()).toList(),
   };
 
   /// Crea un UserModel desde un Map de Firestore
@@ -37,5 +42,9 @@ class UserModel {
     password: map['password'] ?? '',
     fullName: map['full_name'] ?? '',
     money: (map['money'] ?? 0).toDouble(),
+    transactions:
+        (map['transactions'] as List<dynamic>? ?? [])
+            .map((t) => TransactionModel.fromMap(t))
+            .toList(),
   );
 }

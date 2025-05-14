@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
@@ -7,6 +8,8 @@ import 'package:iconify_flutter/icons/material_symbols.dart';
 import 'package:iconify_flutter/icons/mingcute.dart';
 import 'package:iconify_flutter/icons/ph.dart';
 import 'package:yapeclon/data/models/contact_user.dart';
+import 'package:yapeclon/data/models/transaction_model.dart';
+import 'package:yapeclon/data/models/user_model.dart';
 
 class YapearScreen extends StatefulWidget {
   const YapearScreen({super.key});
@@ -16,6 +19,8 @@ class YapearScreen extends StatefulWidget {
 }
 
 class _YapearScreenState extends State<YapearScreen> {
+  final TextEditingController _amountController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final contactUsers =
@@ -73,6 +78,7 @@ class _YapearScreenState extends State<YapearScreen> {
                                 MaterialType
                                     .transparency, // Evita el estilo predeterminado de Material
                             child: TextField(
+                              controller: _amountController,
                               keyboardType: TextInputType.number,
                               style: TextStyle(
                                 fontSize: 80,
@@ -171,7 +177,67 @@ class _YapearScreenState extends State<YapearScreen> {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      final montoText = _amountController.text.trim();
+                      final monto = double.tryParse(montoText);
+
+                      if (monto == null || monto <= 0) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Ingresa un monto válido")),
+                        );
+                        return;
+                      }
+
+                      if (monto > contactUsers.user.money) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Saldo insuficiente")),
+                        );
+                        return;
+                      }
+
+                      final newTransaction = TransactionModel(
+                        id: DateTime.now().millisecondsSinceEpoch.toString(),
+                        amount: monto,
+                        date: DateTime.now(),
+                        description:
+                            "Yape a ${contactUsers.contact.displayName}",
+                        destinationPhone: contactUsers.user.phone,
+                      );
+
+                      final updatedUser = UserModel(
+                        phone: contactUsers.user.phone,
+                        typeDoc: contactUsers.user.typeDoc,
+                        document: contactUsers.user.document,
+                        email: contactUsers.user.email,
+                        password: contactUsers.user.password,
+                        fullName: contactUsers.user.fullName,
+                        money: contactUsers.user.money - monto,
+                        transactions: [
+                          ...contactUsers.user.transactions,
+                          newTransaction,
+                        ],
+                      );
+
+                      // GUARDAR EN FIRESTORE
+                      try {
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(contactUsers.user.phone)
+                            .set(updatedUser.toMap());
+
+                        Navigator.pop(
+                          context,
+                        ); // Regresa a la pantalla anterior
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Yape realizado con éxito")),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Error al yapear: $e")),
+                        );
+                      }
+
                       Navigator.pop(context);
                     },
                     child: Text(
