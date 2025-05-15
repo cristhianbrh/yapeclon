@@ -34,17 +34,24 @@ class UserModel {
   };
 
   /// Crea un UserModel desde un Map de Firestore
-  factory UserModel.fromMap(Map<String, dynamic> map) => UserModel(
-    phone: map['phone'] ?? '',
-    typeDoc: map['type_doc'] ?? '',
-    document: map['document'] ?? '',
-    email: map['email'] ?? '',
-    password: map['password'] ?? '',
-    fullName: map['full_name'] ?? '',
-    money: (map['money'] ?? 0).toDouble(),
-    transactions:
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    final transactionsList =
         (map['transactions'] as List<dynamic>? ?? [])
             .map((t) => TransactionModel.fromMap(t))
-            .toList(),
-  );
+            .toList();
+
+    // Ordenar por fecha descendente (más reciente primero)
+    transactionsList.sort((a, b) => b.date.compareTo(a.date));
+
+    return UserModel(
+      phone: map['phone'] ?? '',
+      typeDoc: map['type_doc'] ?? '',
+      document: map['document'] ?? '',
+      email: map['email'] ?? '',
+      password: map['password'] ?? '',
+      fullName: map['full_name'] ?? '',
+      money: (map['money'] ?? 0).toDouble(),
+      transactions: transactionsList,
+    );
+  }
 }
