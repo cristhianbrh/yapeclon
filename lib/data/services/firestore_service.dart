@@ -5,8 +5,9 @@ import 'package:yapeclon/data/models/user_model.dart';
 class FirestoreService {
   final _db = FirebaseFirestore.instance;
 
-  Future<void> addUser(UserModel user) async {
-    await _db.collection("users").add(user.toMap());
+  Future<String> addUser(UserModel user) async {
+    final docRef = await _db.collection("users").add(user.toMap());
+    return docRef.id; // <-- importante: devolver el ID del documento
   }
 
   Future<List<UserModel>> getUsers() async {
@@ -27,7 +28,10 @@ class FirestoreService {
 
     if (snapshot.docs.isNotEmpty) {
       // Usuario encontrado
-      return UserModel.fromMap(snapshot.docs.first.data());
+      return UserModel.fromMap(
+        snapshot.docs.first.data(),
+        id: snapshot.docs.first.id,
+      );
     } else {
       // No encontrado
       return null;

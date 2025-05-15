@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:yapeclon/data/models/transaction_model.dart';
 import 'package:yapeclon/data/models/user_model.dart';
+import 'package:yapeclon/data/services/firestore_service.dart';
 import 'package:yapeclon/widgets/services_card_widget.dart';
 import 'package:yapeclon/widgets/slider_widget.dart';
 
@@ -11,9 +13,24 @@ class HouseScreen extends StatefulWidget {
 class _HouseScreenState extends State<HouseScreen> {
   bool _viewSaldo = false;
   bool _viewMovements = false;
+  final FirestoreService fs = FirestoreService();
+  late UserModel userData;
+
+  Future<void> refreshUser() async {
+    final userUpdated = await fs.getUserByEmailAndPassword(
+      userData.email,
+      userData.password,
+    );
+    setState(() {
+      if (userUpdated != null) {
+        userData = userUpdated;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final userData = ModalRoute.of(context)!.settings.arguments as UserModel;
+    userData = ModalRoute.of(context)!.settings.arguments as UserModel;
 
     return Scaffold(
       // appBar: AppBar(title: Text('Inicio')),
@@ -62,6 +79,7 @@ class _HouseScreenState extends State<HouseScreen> {
                   onPressed:
                       () => {
                         setState(() {
+                          refreshUser();
                           _viewSaldo = !_viewSaldo;
                         }),
                       },
@@ -217,11 +235,10 @@ class _HouseScreenState extends State<HouseScreen> {
                           height: 140,
                           child: SingleChildScrollView(
                             child: Column(
-                              children: [
-                                _movementWidget(),
-                                _movementWidget(),
-                                _movementWidget(),
-                              ],
+                              children:
+                                  user.transactions.map((tx) {
+                                    return _movementWidget(tx);
+                                  }).toList(),
                             ),
                           ),
                         ),
@@ -285,7 +302,31 @@ class _HouseScreenState extends State<HouseScreen> {
   }
 }
 
-Widget _movementWidget() {
+String _formatDate(DateTime date) {
+  final months = [
+    'ene',
+    'feb',
+    'mar',
+    'abr',
+    'may',
+    'jun',
+    'jul',
+    'ago',
+    'sep',
+    'oct',
+    'nov',
+    'dic',
+  ];
+  final day = date.day;
+  final month = months[date.month - 1];
+  final year = date.year;
+  final hour = date.hour.toString().padLeft(2, '0');
+  final minute = date.minute.toString().padLeft(2, '0');
+
+  return "$day $month. $year - $hour:$minute";
+}
+
+Widget _movementWidget(TransactionModel tx) {
   return Container(
     padding: EdgeInsetsDirectional.symmetric(vertical: 10),
     child: Row(
@@ -294,7 +335,7 @@ Widget _movementWidget() {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Ronald Chaupe S.",
+              tx.description,
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 17,
@@ -302,7 +343,7 @@ Widget _movementWidget() {
               ),
             ),
             Text(
-              "23 abr. 2025 - 9:02 pm",
+              _formatDate(tx.date),
               style: TextStyle(
                 color: Colors.black45,
                 fontSize: 17,
@@ -313,7 +354,7 @@ Widget _movementWidget() {
         ),
         Expanded(child: Container()),
         Text(
-          "- S/ 5.40",
+          "- S/ ${tx.amount.toStringAsFixed(2)}",
           style: TextStyle(
             color: Colors.redAccent,
             fontSize: 17,

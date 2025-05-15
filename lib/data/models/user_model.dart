@@ -9,8 +9,10 @@ class UserModel {
   final String fullName;
   final double money;
   final List<TransactionModel> transactions;
+  final String id;
 
   UserModel({
+    required this.id,
     required this.phone,
     required this.typeDoc,
     required this.document,
@@ -34,17 +36,19 @@ class UserModel {
   };
 
   /// Crea un UserModel desde un Map de Firestore
-  factory UserModel.fromMap(Map<String, dynamic> map) => UserModel(
-    phone: map['phone'] ?? '',
-    typeDoc: map['type_doc'] ?? '',
-    document: map['document'] ?? '',
-    email: map['email'] ?? '',
-    password: map['password'] ?? '',
-    fullName: map['full_name'] ?? '',
-    money: (map['money'] ?? 0).toDouble(),
-    transactions:
-        (map['transactions'] as List<dynamic>? ?? [])
-            .map((t) => TransactionModel.fromMap(t))
-            .toList(),
-  );
+  factory UserModel.fromMap(Map<String, dynamic> map, {required String id}) =>
+      UserModel(
+        id: id,
+        phone: map['phone'] ?? '',
+        typeDoc: map['type_doc'] ?? '',
+        document: map['document'] ?? '',
+        email: map['email'] ?? '',
+        password: map['password'] ?? '',
+        fullName: map['full_name'] ?? '',
+        money: (map['money'] ?? 0).toDouble(),
+        transactions:
+            (map['transactions'] as List<dynamic>? ?? [])
+                .map((t) => TransactionModel.fromMap(t))
+                .toList(),
+      );
 }
