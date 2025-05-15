@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:yapeclon/data/models/transaction_model.dart';
 import 'package:yapeclon/data/models/user_model.dart';
@@ -415,7 +417,12 @@ Widget _topHeaderHouse(UserModel user) {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Hola, " + user.fullName.substring(0, 9) + "...",
+                    "Hola, " +
+                        user.fullName.substring(
+                          0,
+                          min(9, user.fullName.length),
+                        ) +
+                        "...",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 15,
