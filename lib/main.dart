@@ -14,6 +14,9 @@ import 'package:yapeclon/screens/home/options_creen.dart';
 import 'package:yapeclon/screens/home/scanner_screen.dart';
 import 'package:yapeclon/screens/home/yapear_screen.dart';
 
+final RouteObserver<ModalRoute<void>> routeObserver =
+    RouteObserver<ModalRoute<void>>();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -26,6 +29,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'YAPECLON',
       initialRoute: '/home',
+      navigatorObservers: [routeObserver],
       routes: {
         '/login': (context) => LoginScreen(),
         '/login-email': (context) => LoginEmailScreen(),

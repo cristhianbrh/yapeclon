@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:yapeclon/data/models/user_model.dart';
+import 'package:yapeclon/data/services/firestore_service.dart';
+import 'package:yapeclon/main.dart';
 import 'package:yapeclon/widgets/services_card_widget.dart';
 import 'package:yapeclon/widgets/slider_widget.dart';
 
@@ -8,12 +10,58 @@ class HouseScreen extends StatefulWidget {
   State<HouseScreen> createState() => _HouseScreenState();
 }
 
-class _HouseScreenState extends State<HouseScreen> {
+class _HouseScreenState extends State<HouseScreen> with RouteAware {
   bool _viewSaldo = false;
   bool _viewMovements = false;
+  UserModel? userData;
+  FirestoreService fs = FirestoreService();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+
+    // Solo asignar si aún no está asignado
+    if (userData == null) {
+      final args = ModalRoute.of(context)!.settings.arguments;
+      if (args != null && args is UserModel) {
+        userData = args;
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    print('Volviste al HouseScreen');
+    _refrescarDatos(); // Aquí haces lo que quieras al volver al screen
+  }
+
+  void _refrescarDatos() async {
+    if (userData == null) return;
+
+    UserModel? userCurrentGet = await fs.getUserByEmailAndPassword(
+      userData!.email,
+      userData!.password,
+    );
+
+    if (userCurrentGet != null) {
+      print(userCurrentGet.money);
+      setState(() {
+        userData = userCurrentGet;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final userData = ModalRoute.of(context)!.settings.arguments as UserModel;
+    // userData = ModalRoute.of(context)!.settings.arguments as UserModel;
 
     return Scaffold(
       // appBar: AppBar(title: Text('Inicio')),
@@ -30,10 +78,10 @@ class _HouseScreenState extends State<HouseScreen> {
           ),
           child: Column(
             children: [
-              _topHeaderHouse(userData),
+              _topHeaderHouse(userData!),
               ServicesCardWidget(),
               SliderWidget(),
-              _contentBodyHouse(userData),
+              _contentBodyHouse(userData!),
             ],
           ),
         ),
