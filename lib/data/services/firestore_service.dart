@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:yapeclon/data/models/transaction_model.dart';
 import 'package:yapeclon/data/models/user_model.dart';
 
 class FirestoreService {
@@ -31,5 +32,13 @@ class FirestoreService {
       // No encontrado
       return null;
     }
+  }
+
+  Future<void> addTransactionToUser(String userId, TransactionModel trx) async {
+    final userRef = _db.collection('users').doc(userId);
+
+    await userRef.update({
+      'transactions': FieldValue.arrayUnion([trx.toMap()]),
+    });
   }
 }

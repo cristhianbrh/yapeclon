@@ -1,5 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:yapeclon/data/models/transaction_model.dart';
 import 'package:yapeclon/data/models/user_model.dart';
+import 'package:yapeclon/data/services/firestore_service.dart';
+import 'package:yapeclon/main.dart';
 import 'package:yapeclon/widgets/services_card_widget.dart';
 import 'package:yapeclon/widgets/slider_widget.dart';
 
@@ -8,12 +13,58 @@ class HouseScreen extends StatefulWidget {
   State<HouseScreen> createState() => _HouseScreenState();
 }
 
-class _HouseScreenState extends State<HouseScreen> {
+class _HouseScreenState extends State<HouseScreen> with RouteAware {
   bool _viewSaldo = false;
   bool _viewMovements = false;
+  UserModel? userData;
+  FirestoreService fs = FirestoreService();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+
+    // Solo asignar si aún no está asignado
+    if (userData == null) {
+      final args = ModalRoute.of(context)!.settings.arguments;
+      if (args != null && args is UserModel) {
+        userData = args;
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    print('Volviste al HouseScreen');
+    _refrescarDatos(); // Aquí haces lo que quieras al volver al screen
+  }
+
+  void _refrescarDatos() async {
+    if (userData == null) return;
+
+    UserModel? userCurrentGet = await fs.getUserByEmailAndPassword(
+      userData!.email,
+      userData!.password,
+    );
+
+    if (userCurrentGet != null) {
+      print(userCurrentGet.money);
+      setState(() {
+        userData = userCurrentGet;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final userData = ModalRoute.of(context)!.settings.arguments as UserModel;
+    // userData = ModalRoute.of(context)!.settings.arguments as UserModel;
 
     return Scaffold(
       // appBar: AppBar(title: Text('Inicio')),
@@ -30,10 +81,10 @@ class _HouseScreenState extends State<HouseScreen> {
           ),
           child: Column(
             children: [
-              _topHeaderHouse(userData),
+              _topHeaderHouse(userData!),
               ServicesCardWidget(),
               SliderWidget(),
-              _contentBodyHouse(userData),
+              _contentBodyHouse(userData!),
             ],
           ),
         ),
@@ -217,11 +268,10 @@ class _HouseScreenState extends State<HouseScreen> {
                           height: 140,
                           child: SingleChildScrollView(
                             child: Column(
-                              children: [
-                                _movementWidget(),
-                                _movementWidget(),
-                                _movementWidget(),
-                              ],
+                              children:
+                                  user.transactions.map((tx) {
+                                    return _movementWidget(tx);
+                                  }).toList(),
                             ),
                           ),
                         ),
@@ -257,7 +307,11 @@ class _HouseScreenState extends State<HouseScreen> {
                 ),
                 ElevatedButton.icon(
                   onPressed: () {
-                    Navigator.pushNamed(context, "/listcontact");
+                    Navigator.pushNamed(
+                      context,
+                      "/listcontact",
+                      arguments: user,
+                    );
                   },
                   icon: Icon(Icons.send, color: Colors.white, size: 25),
                   label: Text(
@@ -281,7 +335,31 @@ class _HouseScreenState extends State<HouseScreen> {
   }
 }
 
-Widget _movementWidget() {
+String _formatDate(DateTime date) {
+  final months = [
+    'ene',
+    'feb',
+    'mar',
+    'abr',
+    'may',
+    'jun',
+    'jul',
+    'ago',
+    'sep',
+    'oct',
+    'nov',
+    'dic',
+  ];
+  final day = date.day;
+  final month = months[date.month - 1];
+  final year = date.year;
+  final hour = date.hour.toString().padLeft(2, '0');
+  final minute = date.minute.toString().padLeft(2, '0');
+
+  return "$day $month. $year - $hour:$minute";
+}
+
+Widget _movementWidget(TransactionModel tx) {
   return Container(
     padding: EdgeInsetsDirectional.symmetric(vertical: 10),
     child: Row(
@@ -290,7 +368,7 @@ Widget _movementWidget() {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Ronald Chaupe S.",
+              tx.description,
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 17,
@@ -298,7 +376,7 @@ Widget _movementWidget() {
               ),
             ),
             Text(
-              "23 abr. 2025 - 9:02 pm",
+              _formatDate(tx.date),
               style: TextStyle(
                 color: Colors.black45,
                 fontSize: 17,
@@ -309,7 +387,7 @@ Widget _movementWidget() {
         ),
         Expanded(child: Container()),
         Text(
-          "- S/ 5.40",
+          "- S/ ${tx.amount.toStringAsFixed(2)}",
           style: TextStyle(
             color: Colors.redAccent,
             fontSize: 17,
@@ -339,7 +417,12 @@ Widget _topHeaderHouse(UserModel user) {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Hola, " + user.fullName.substring(0, 9) + "...",
+                    "Hola, " +
+                        user.fullName.substring(
+                          0,
+                          min(9, user.fullName.length),
+                        ) +
+                        "...",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 15,
