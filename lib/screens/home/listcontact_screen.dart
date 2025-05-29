@@ -152,6 +152,7 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
                       contact: contact,
                       user: user,
                       userRecept: userEnv,
+                      cantidad: null,
                     ),
                   );
                 } else {

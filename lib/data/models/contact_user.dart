@@ -5,10 +5,12 @@ class ContactUserArgs {
   final Contact contact;
   final UserModel user;
   final UserModel userRecept;
+  final double? cantidad;
 
   ContactUserArgs({
     required this.contact,
     required this.user,
     required this.userRecept,
+    required this.cantidad,
   });
 }

@@ -256,12 +256,23 @@ class _YapearScreenState extends State<YapearScreen> {
                             .doc(contactUsers.userRecept.phone)
                             .set(updatedUserRecept.toMap());
 
-                        Navigator.pop(
-                          context,
-                        ); // Regresa a la pantalla anterior
+                        // Navigator.pop(
+                        //   context,
+                        // ); // Regresa a la pantalla anterior
 
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("Yape realizado con éxito")),
+                        );
+
+                        Navigator.pushNamed(
+                          context,
+                          "/view-yapear",
+                          // arguments: ContactUserArgs(
+                          //   contact: contactUsers.contact,
+                          //   user: contactUsers.user,
+                          //   userRecept: contactUsers.userRecept,
+                          //   cantidad: monto,
+                          // ),
                         );
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(

@@ -18,10 +18,10 @@ class ViewYapearScreen extends StatefulWidget {
 }
 
 class _ViewYapearScreenState extends State<ViewYapearScreen> {
-  final TextEditingController _amountController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
+    // final contactUsers =
+    //     ModalRoute.of(context)!.settings.arguments as ContactUserArgs;
     return Scaffold(
       backgroundColor: Colors.purpleAccent,
       // appBar: AppBar(title: Text('Inicio')),
@@ -85,7 +85,8 @@ class _ViewYapearScreenState extends State<ViewYapearScreen> {
                       ],
                     ),
                     Text(
-                      "S/ 7",
+                      // "S/ ${contactUsers.cantidad?.abs() ?? 0}"
+                      "S/ ",
                       style: TextStyle(
                         fontSize: 30,
                         color: Colors.black87,
