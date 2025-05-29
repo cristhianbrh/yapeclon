@@ -6,6 +6,7 @@ import 'package:iconify_flutter/icons/subway.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:yapeclon/data/models/contact_user.dart';
 import 'package:yapeclon/data/models/user_model.dart';
+import 'package:yapeclon/data/services/firestore_service.dart';
 
 class ListcontactScreen extends StatefulWidget {
   const ListcontactScreen({super.key});
@@ -137,13 +138,27 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
           ),
           Positioned.fill(
             child: GestureDetector(
-              onTap: () {
+              onTap: () async {
                 // Aquí colocas lo que debe pasar al hacer clic
-                Navigator.pushNamed(
-                  context,
-                  "/yapear",
-                  arguments: ContactUserArgs(contact: contact, user: user),
+                FirestoreService fs = new FirestoreService();
+                UserModel? userEnv = await fs.getUserByNumber(
+                  contact.phones.isNotEmpty ? contact.phones.first.number : '',
                 );
+                if (userEnv != null) {
+                  Navigator.pushNamed(
+                    context,
+                    "/yapear",
+                    arguments: ContactUserArgs(contact: contact, user: user),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("El usuario no tiene Yape."),
+                      duration: Duration(seconds: 2),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
               },
               behavior: HitTestBehavior.translucent,
               child: Container(), // Invisible

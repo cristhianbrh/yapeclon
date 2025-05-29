@@ -14,6 +14,18 @@ class FirestoreService {
     return snapshot.docs.map((doc) => UserModel.fromMap(doc.data())).toList();
   }
 
+  Future<UserModel?> getUserByNumber(String phone) async {
+    final snapshot =
+        await _db.collection("users").where("phone", isEqualTo: phone).get();
+    if (snapshot.docs.isNotEmpty) {
+      // Usuario encontrado
+      return UserModel.fromMap(snapshot.docs.first.data());
+    } else {
+      // No encontrado
+      return null;
+    }
+  }
+
   Future<UserModel?> getUserByEmailAndPassword(
     String email,
     String password,
