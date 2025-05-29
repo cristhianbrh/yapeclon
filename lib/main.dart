@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'YAPECLON',
-      initialRoute: '/home',
+      initialRoute: '/fadcam',
       navigatorObservers: [routeObserver],
       routes: {
         '/login': (context) => LoginScreen(),
