@@ -195,12 +195,25 @@ class _YapearScreenState extends State<YapearScreen> {
                         return;
                       }
 
+                      final date = DateTime.now();
+                      final datecurrent =
+                          date.millisecondsSinceEpoch.toString();
+
                       final newTransaction = TransactionModel(
-                        id: DateTime.now().millisecondsSinceEpoch.toString(),
-                        amount: monto,
-                        date: DateTime.now(),
+                        id: datecurrent,
+                        amount: -monto,
+                        date: date,
                         description:
                             "Yape a ${contactUsers.contact.displayName}",
+                        destinationPhone: contactUsers.user.phone,
+                      );
+
+                      final newTransactionRecept = TransactionModel(
+                        id: datecurrent,
+                        amount: monto,
+                        date: date,
+                        description:
+                            "Te ha yapeado ${contactUsers.user.fullName}",
                         destinationPhone: contactUsers.user.phone,
                       );
 
@@ -217,6 +230,19 @@ class _YapearScreenState extends State<YapearScreen> {
                           newTransaction,
                         ],
                       );
+                      final updatedUserRecept = UserModel(
+                        phone: contactUsers.userRecept.phone,
+                        typeDoc: contactUsers.userRecept.typeDoc,
+                        document: contactUsers.userRecept.document,
+                        email: contactUsers.userRecept.email,
+                        password: contactUsers.userRecept.password,
+                        fullName: contactUsers.userRecept.fullName,
+                        money: contactUsers.userRecept.money + monto,
+                        transactions: [
+                          ...contactUsers.userRecept.transactions,
+                          newTransactionRecept,
+                        ],
+                      );
 
                       // GUARDAR EN FIRESTORE
                       try {
@@ -224,6 +250,11 @@ class _YapearScreenState extends State<YapearScreen> {
                             .collection('users')
                             .doc(contactUsers.user.phone)
                             .set(updatedUser.toMap());
+
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(contactUsers.userRecept.phone)
+                            .set(updatedUserRecept.toMap());
 
                         Navigator.pop(
                           context,

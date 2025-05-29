@@ -12,6 +12,8 @@ class CreatePasswordScreen extends StatefulWidget {
 class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
   String password = "";
   List<int> numeros = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  bool isProcessing = false;
+
   @override
   void initState() {
     super.initState();
@@ -45,8 +47,8 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
       }
       return _buildButtonLogin(
         label: '${numeros[index < 9 ? index : 9]}',
-        onPressed: () {
-          if (password.length < 6) {
+        onPressed: () async {
+          if (password.length < 6 && !isProcessing) {
             // Agregar número al password y luego evaluar
             String nuevoPassword =
                 password + numeros[index < 9 ? index : 9].toString();
@@ -56,23 +58,36 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
             });
 
             if (nuevoPassword.length == 6) {
+              setState(() {
+                isProcessing = true;
+              });
+              FirestoreService fs = FirestoreService();
+              final existingUser = await fs.getUserByNumber(userData.phone);
+              if (existingUser != null) {
+                print("Usuario ya existe");
+                setState(() {
+                  isProcessing = false;
+                });
+                return;
+              }
+
               // Si es correcto, navegar y resetear después
               UserModel newUser = UserModel(
                 typeDoc: userData.typeDoc,
                 document: userData.document,
                 email: userData.email,
                 phone: userData.phone,
-                password: password,
+                password: nuevoPassword,
                 fullName: userData.fullName,
               );
-              FirestoreService fs = FirestoreService();
-              fs.addUser(newUser);
+              await fs.addUser(newUser);
 
               Navigator.pushNamed(context, "/house", arguments: newUser);
               Future.delayed(Duration(milliseconds: 100), () {
                 setState(() {
                   password = "";
                   numeros.shuffle();
+                  isProcessing = false;
                 });
               });
             } else if (nuevoPassword.length >= 6) {

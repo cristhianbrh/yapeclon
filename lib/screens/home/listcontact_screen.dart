@@ -148,7 +148,11 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
                   Navigator.pushNamed(
                     context,
                     "/yapear",
-                    arguments: ContactUserArgs(contact: contact, user: user),
+                    arguments: ContactUserArgs(
+                      contact: contact,
+                      user: user,
+                      userRecept: userEnv,
+                    ),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(

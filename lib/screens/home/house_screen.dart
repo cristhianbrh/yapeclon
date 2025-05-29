@@ -368,7 +368,8 @@ Widget _movementWidget(TransactionModel tx) {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              tx.description,
+              tx.description.substring(0, min(25, tx.description.length)) +
+                  "...",
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 17,
@@ -387,9 +388,9 @@ Widget _movementWidget(TransactionModel tx) {
         ),
         Expanded(child: Container()),
         Text(
-          "- S/ ${tx.amount.toStringAsFixed(2)}",
+          "${tx.amount < 0 ? "-" : ""} S/ ${tx.amount.toStringAsFixed(2)}",
           style: TextStyle(
-            color: Colors.redAccent,
+            color: tx.amount > 0 ? Colors.black : Colors.redAccent,
             fontSize: 17,
             fontWeight: FontWeight.w500,
           ),
