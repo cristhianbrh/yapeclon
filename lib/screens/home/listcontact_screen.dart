@@ -164,7 +164,9 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
                 // Aquí colocas lo que debe pasar al hacer clic
                 FirestoreService fs = new FirestoreService();
                 UserModel? userEnv = await fs.getUserByNumber(
-                  contact.phones.isNotEmpty ? contact.phones.first.number : '',
+                  contact.phones.isNotEmpty
+                      ? contact.phones.first.number.replaceFirst("+51", "")
+                      : '',
                 );
                 if (userEnv != null) {
                   Navigator.pushNamed(
