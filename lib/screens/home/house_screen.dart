@@ -7,6 +7,7 @@ import 'package:yapeclon/data/services/firestore_service.dart';
 import 'package:yapeclon/layouts/layout_main.dart';
 import 'package:yapeclon/layouts/layout_panel_white.dart';
 import 'package:yapeclon/main.dart';
+import 'package:yapeclon/widgets/buttons/button_main_widget.dart';
 import 'package:yapeclon/widgets/header/top_header_house.dart';
 import 'package:yapeclon/widgets/services_card_widget.dart';
 import 'package:yapeclon/widgets/slider_widget.dart';
@@ -270,25 +271,19 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
               childAspectRatio: 3,
 
               children: [
-                ElevatedButton.icon(
+                ButtonMainWidget(
+                  text: 'ESCANEAR QR',
+                  icon: Icons.qr_code,
                   onPressed: () {
                     Navigator.pushNamed(context, "/scanner");
                   },
-                  icon: Icon(Icons.qr_code, color: Color(0xFF0FCBB3), size: 25),
-                  label: Text(
-                    'ESCANEAR QR',
-                    style: TextStyle(color: Color(0xFF0FCBB3), fontSize: 15),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    side: BorderSide(color: Color(0xFF0FCBB3), width: 1),
-                    // minimumSize: Size(double.infinity, 50),
-                  ),
                 ),
-                ElevatedButton.icon(
+                ButtonMainWidget(
+                  text: 'YAPEAR',
+                  icon: Icons.send,
+                  backgroundColor: Color(0xFF0FCBB3),
+                  color: Colors.white,
+                  borderSide: BorderSide.none,
                   onPressed: () {
                     Navigator.pushNamed(
                       context,
@@ -296,18 +291,6 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
                       arguments: user,
                     );
                   },
-                  icon: Icon(Icons.send, color: Colors.white, size: 25),
-                  label: Text(
-                    'YAPEAR',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF0FCBB3),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    // minimumSize: Size(double.infinity, 10),
-                  ),
                 ),
               ],
             ),
