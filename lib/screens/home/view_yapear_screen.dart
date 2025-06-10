@@ -1,14 +1,8 @@
-import 'dart:math';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/material_symbols.dart';
-import 'package:iconify_flutter/icons/ph.dart';
 import 'package:iconify_flutter/icons/tabler.dart';
 import 'package:yapeclon/data/models/contact_user.dart';
-import 'package:yapeclon/data/models/transaction_model.dart';
-import 'package:yapeclon/data/models/user_model.dart';
 
 class ViewYapearScreen extends StatefulWidget {
   const ViewYapearScreen({super.key});
@@ -20,8 +14,8 @@ class ViewYapearScreen extends StatefulWidget {
 class _ViewYapearScreenState extends State<ViewYapearScreen> {
   @override
   Widget build(BuildContext context) {
-    // final contactUsers =
-    //     ModalRoute.of(context)!.settings.arguments as ContactUserArgs;
+    final contactUsers =
+        ModalRoute.of(context)!.settings.arguments as ContactUserArgs;
     return Scaffold(
       backgroundColor: Colors.purpleAccent,
       // appBar: AppBar(title: Text('Inicio')),
@@ -85,8 +79,7 @@ class _ViewYapearScreenState extends State<ViewYapearScreen> {
                       ],
                     ),
                     Text(
-                      // "S/ ${contactUsers.cantidad?.abs() ?? 0}"
-                      "S/ ",
+                      "S/ ${contactUsers.cantidad?.abs() ?? 0}",
                       style: TextStyle(
                         fontSize: 30,
                         color: Colors.black87,
@@ -94,7 +87,8 @@ class _ViewYapearScreenState extends State<ViewYapearScreen> {
                       ),
                     ),
                     Text(
-                      "Eydi E. Medina V.",
+                      contactUsers.userRecept.fullName,
+                      // "Eydi E. Medina V.",
                       style: TextStyle(
                         fontSize: 25,
                         color: Colors.black87,
@@ -104,7 +98,8 @@ class _ViewYapearScreenState extends State<ViewYapearScreen> {
                     Row(
                       children: [
                         Text(
-                          "📅 22 may. 2025 | 🕒 03:29 p. m.",
+                          formatDateTime(contactUsers.date),
+                          // "📅 22 may. 2025 | 🕒 03:29 p. m.",
                           style: TextStyle(
                             fontSize: 15,
                             color: Colors.black54,
@@ -244,7 +239,7 @@ class _ViewYapearScreenState extends State<ViewYapearScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Nro. de celular",
+                          "Nro. de operación",
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.black87,
@@ -269,6 +264,41 @@ class _ViewYapearScreenState extends State<ViewYapearScreen> {
         ),
       ),
     );
+  }
+
+  String formatDateTime(DateTime? dateTime) {
+    if (dateTime == null) return '';
+
+    final days = [
+      'ene',
+      'feb',
+      'mar',
+      'abr',
+      'may',
+      'jun',
+      'jul',
+      'ago',
+      'sep',
+      'oct',
+      'nov',
+      'dic',
+    ];
+
+    final day = dateTime.day.toString().padLeft(2, '0');
+    final month = days[dateTime.month - 1];
+    final year = dateTime.year;
+
+    int hour = dateTime.hour;
+    final minute = dateTime.minute.toString().padLeft(2, '0');
+    final isPm = hour >= 12;
+
+    // Formato 12 horas
+    hour = hour % 12;
+    if (hour == 0) hour = 12;
+
+    final period = isPm ? 'p. m.' : 'a. m.';
+
+    return '📅 $day $month. $year | 🕒 ${hour.toString().padLeft(2, '0')}:$minute $period';
   }
 
   Widget _topHeader(BuildContext context) {

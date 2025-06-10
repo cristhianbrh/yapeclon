@@ -368,7 +368,7 @@ Widget _movementWidget(TransactionModel tx) {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              tx.description.substring(0, min(25, tx.description.length)) +
+              tx.description.substring(0, min(21, tx.description.length)) +
                   "...",
               style: TextStyle(
                 color: Colors.black,

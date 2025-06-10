@@ -6,11 +6,13 @@ class ContactUserArgs {
   final UserModel user;
   final UserModel userRecept;
   final double? cantidad;
+  final DateTime? date;
 
   ContactUserArgs({
     required this.contact,
     required this.user,
     required this.userRecept,
     required this.cantidad,
+    required this.date,
   });
 }

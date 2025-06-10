@@ -26,9 +26,31 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
 
   Future<void> _getContacts() async {
     if (await FlutterContacts.requestPermission()) {
-      final contacts = await FlutterContacts.getContacts(withProperties: true);
+      final contacts_get = await FlutterContacts.getContacts(
+        withProperties: true,
+      );
+      final contacts = <String, Contact>{};
+
+      for (var contact in contacts_get) {
+        // Normaliza nombre y número para comparar
+        final name = contact.displayName.trim().toLowerCase();
+        final phone =
+            contact.phones.isNotEmpty
+                ? contact.phones.first.number.replaceAll(RegExp(r'\D'), '')
+                : '';
+
+        final key = '$name|$phone';
+
+        if (!contacts.containsKey(key)) {
+          contacts[key] = contact;
+        } else {
+          // El contacto ya existe, lo puedes eliminar si lo deseas
+          await FlutterContacts.deleteContact(contact);
+        }
+      }
+
       setState(() {
-        _contacts = contacts;
+        _contacts = contacts.values.toList();
       });
     } else {
       print("Permiso denegado para leer contactos.");
@@ -153,6 +175,7 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
                       user: user,
                       userRecept: userEnv,
                       cantidad: null,
+                      date: null,
                     ),
                   );
                 } else {

@@ -267,12 +267,13 @@ class _YapearScreenState extends State<YapearScreen> {
                         Navigator.pushNamed(
                           context,
                           "/view-yapear",
-                          // arguments: ContactUserArgs(
-                          //   contact: contactUsers.contact,
-                          //   user: contactUsers.user,
-                          //   userRecept: contactUsers.userRecept,
-                          //   cantidad: monto,
-                          // ),
+                          arguments: ContactUserArgs(
+                            contact: contactUsers.contact,
+                            user: contactUsers.user,
+                            userRecept: contactUsers.userRecept,
+                            cantidad: monto,
+                            date: date,
+                          ),
                         );
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -280,7 +281,7 @@ class _YapearScreenState extends State<YapearScreen> {
                         );
                       }
 
-                      Navigator.pop(context);
+                      // Navigator.pop(context);
                     },
                     child: Text(
                       'YAPEAR',
