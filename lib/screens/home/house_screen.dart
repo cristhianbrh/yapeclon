@@ -6,6 +6,7 @@ import 'package:yapeclon/data/models/user_model.dart';
 import 'package:yapeclon/data/services/firestore_service.dart';
 import 'package:yapeclon/layouts/layout_main.dart';
 import 'package:yapeclon/main.dart';
+import 'package:yapeclon/widgets/header/top_header_house.dart';
 import 'package:yapeclon/widgets/services_card_widget.dart';
 import 'package:yapeclon/widgets/slider_widget.dart';
 
@@ -66,10 +67,13 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
   @override
   Widget build(BuildContext context) {
     // userData = ModalRoute.of(context)!.settings.arguments as UserModel;
+    if (userData == null) {
+      return Center(child: CircularProgressIndicator());
+    }
     return LayoutMain(
       child: Column(
         children: [
-          _topHeaderHouse(userData!),
+          TopHeaderHouse(user: userData!),
           ServicesCardWidget(),
           SliderWidget(),
           _contentBodyHouse(userData!),
@@ -380,82 +384,6 @@ Widget _movementWidget(TransactionModel tx) {
             fontSize: 17,
             fontWeight: FontWeight.w500,
           ),
-        ),
-      ],
-    ),
-  );
-}
-
-Widget _topHeaderHouse(UserModel user) {
-  return Container(
-    padding: EdgeInsets.fromLTRB(12, 5, 12, 5),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        IconButton(
-          onPressed: () => {},
-          icon: Icon(Icons.menu_rounded, color: Colors.white),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Hola, " +
-                        user.fullName.substring(
-                          0,
-                          min(9, user.fullName.length),
-                        ) +
-                        "...",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  SizedBox(width: 5),
-                  ElevatedButton(
-                    onPressed: () => {},
-                    child: Text(
-                      "Gratis",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(10, 10),
-                      backgroundColor: Colors.amber,
-                      padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(7),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            IconButton(
-              onPressed: () => {},
-              icon: Icon(
-                Icons.headset_mic_outlined,
-                color: Colors.white,
-                size: 22,
-              ),
-            ),
-            IconButton(
-              onPressed: () => {},
-              icon: Icon(
-                Icons.notifications_none,
-                color: Colors.white,
-                size: 22,
-              ),
-            ),
-          ],
         ),
       ],
     ),
