@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:yapeclon/data/models/transaction_model.dart';
 import 'package:yapeclon/data/models/user_model.dart';
 import 'package:yapeclon/data/services/firestore_service.dart';
+import 'package:yapeclon/layouts/layout_main.dart';
 import 'package:yapeclon/main.dart';
 import 'package:yapeclon/widgets/services_card_widget.dart';
 import 'package:yapeclon/widgets/slider_widget.dart';
@@ -65,29 +66,14 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
   @override
   Widget build(BuildContext context) {
     // userData = ModalRoute.of(context)!.settings.arguments as UserModel;
-
-    return Scaffold(
-      // appBar: AppBar(title: Text('Inicio')),
-      body: SafeArea(
-        child: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color.fromARGB(255, 148, 102, 168), Color(0xFF720e9e)],
-            ),
-          ),
-          child: Column(
-            children: [
-              _topHeaderHouse(userData!),
-              ServicesCardWidget(),
-              SliderWidget(),
-              _contentBodyHouse(userData!),
-            ],
-          ),
-        ),
+    return LayoutMain(
+      child: Column(
+        children: [
+          _topHeaderHouse(userData!),
+          ServicesCardWidget(),
+          SliderWidget(),
+          _contentBodyHouse(userData!),
+        ],
       ),
     );
   }
