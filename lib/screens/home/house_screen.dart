@@ -5,6 +5,7 @@ import 'package:yapeclon/data/models/transaction_model.dart';
 import 'package:yapeclon/data/models/user_model.dart';
 import 'package:yapeclon/data/services/firestore_service.dart';
 import 'package:yapeclon/layouts/layout_main.dart';
+import 'package:yapeclon/layouts/layout_panel_white.dart';
 import 'package:yapeclon/main.dart';
 import 'package:yapeclon/widgets/header/top_header_house.dart';
 import 'package:yapeclon/widgets/services_card_widget.dart';
@@ -84,15 +85,7 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
 
   Widget _contentBodyHouse(UserModel user) {
     return Expanded(
-      child: Container(
-        padding: EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
+      child: LayoutPanelWhite(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:iconify_flutter/icons/teenyicons.dart';
+import 'package:yapeclon/layouts/layout_panel_white.dart';
 
 class LoginEmailScreen extends StatefulWidget {
   @override
@@ -115,26 +116,7 @@ class _LoginEmailScreenState extends State<LoginEmailScreen> {
                 ),
               ),
               Expanded(
-                child: Container(
-                  padding: EdgeInsets.only(
-                    left: 20,
-                    bottom: 20,
-                    right: 20,
-                    top: 33,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color.fromARGB(61, 70, 70, 70),
-                        spreadRadius: 2,
-                        blurRadius: 6,
-                        offset: Offset(2, 3),
-                      ),
-                    ],
-                  ),
-
+                child: LayoutPanelWhite(
                   child: Column(
                     children: [
                       Text(
