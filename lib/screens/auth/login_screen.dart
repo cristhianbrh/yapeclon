@@ -6,6 +6,7 @@ import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:iconify_flutter/icons/teenyicons.dart';
 import 'package:yapeclon/data/models/user_model.dart';
 import 'package:yapeclon/data/services/firestore_service.dart';
+import 'package:yapeclon/layouts/layout_main.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -92,108 +93,88 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     });
 
-    return Scaffold(
-      // appBar: AppBar(title: Text('Inicio')),
-      backgroundColor: Color(0xFF720e9e),
-      body: SafeArea(
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color.fromARGB(255, 148, 102, 168), Color(0xFF720e9e)],
+    return LayoutMain(
+      child: Column(
+        children: [
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.centerRight,
+                    child: _ButtonHelp(),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: Container(
+                        height: 150,
+                        width: 150,
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                        ),
+                        child: Image.asset("assets/images/QR/IMG_LOGIN_QR.jpg"),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          child: Column(
-            children: [
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                  child: Column(
-                    children: [
-                      Container(
-                        alignment: Alignment.centerRight,
-                        child: _ButtonHelp(),
-                      ),
-                      Expanded(
-                        child: Center(
-                          child: Container(
-                            height: 150,
-                            width: 150,
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white,
-                            ),
-                            child: Image.asset(
-                              "assets/images/QR/IMG_LOGIN_QR.jpg",
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+          Container(
+            padding: EdgeInsets.only(left: 20, bottom: 20, right: 20, top: 33),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color.fromARGB(61, 70, 70, 70),
+                  spreadRadius: 2,
+                  blurRadius: 6,
+                  offset: Offset(2, 3),
                 ),
-              ),
-              Container(
-                padding: EdgeInsets.only(
-                  left: 20,
-                  bottom: 20,
-                  right: 20,
-                  top: 33,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color.fromARGB(61, 70, 70, 70),
-                      spreadRadius: 2,
-                      blurRadius: 6,
-                      offset: Offset(2, 3),
-                    ),
-                  ],
-                ),
+              ],
+            ),
 
-                child: Column(
-                  children: [
-                    password.length == 0
-                        ? Text(
-                          "Ingresa tu clave",
-                          style: TextStyle(
-                            color: const Color.fromARGB(255, 120, 30, 136),
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        )
-                        : _buildIndicatorPasswordLength(password),
-                    SizedBox(height: 33),
-                    Container(
-                      height: 216,
-                      // color: Colors.red,
-                      child: GridView.count(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        childAspectRatio: 2.15,
-                        children: items,
-                      ),
-                    ),
-                    SizedBox(height: 30),
-                    Text(
-                      "¿OLVIDASTE TU CLAVE?",
+            child: Column(
+              children: [
+                password.length == 0
+                    ? Text(
+                      "Ingresa tu clave",
                       style: TextStyle(
-                        color: const Color.fromARGB(255, 32, 213, 168),
-                        fontSize: 15,
+                        color: const Color.fromARGB(255, 120, 30, 136),
+                        fontSize: 20,
                         fontWeight: FontWeight.w600,
                       ),
-                    ),
-                  ],
+                    )
+                    : _buildIndicatorPasswordLength(password),
+                SizedBox(height: 33),
+                Container(
+                  height: 216,
+                  // color: Colors.red,
+                  child: GridView.count(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: 2.15,
+                    children: items,
+                  ),
                 ),
-              ),
-            ],
+                SizedBox(height: 30),
+                Text(
+                  "¿OLVIDASTE TU CLAVE?",
+                  style: TextStyle(
+                    color: const Color.fromARGB(255, 32, 213, 168),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
