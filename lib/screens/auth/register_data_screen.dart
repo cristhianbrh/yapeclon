@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yapeclon/data/models/user_model.dart';
+import 'package:yapeclon/widgets/buttons/button_main_widget.dart';
 
 class RegisterDataScreen extends StatefulWidget {
   @override
@@ -54,7 +55,8 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
                         "Cristhian Addmer ...",
                       ),
                       SizedBox(height: 20),
-                      ElevatedButton(
+                      ButtonMainWidget(
+                        text: "Continuar",
                         onPressed: () {
                           // Crear el objeto con los datos
                           UserModel userData = UserModel(
@@ -75,20 +77,10 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
                             arguments:
                                 userData, // Enviar el objeto con los datos
                           );
-
-                          // Navigator.pushNamed(context, "/crear-clave");
                         },
-                        child: Text(
-                          "Continuar",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 34, 211, 191),
-                          minimumSize: Size(double.infinity, 45),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
+                        borderSide: BorderSide.none,
+                        backgroundColor: Color(0xFF0FCBB3),
+                        color: Colors.white,
                       ),
                     ],
                   ),

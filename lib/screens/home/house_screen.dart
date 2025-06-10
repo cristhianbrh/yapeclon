@@ -274,6 +274,7 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
                 ButtonMainWidget(
                   text: 'ESCANEAR QR',
                   icon: Icons.qr_code,
+                  fontSize: 15,
                   onPressed: () {
                     Navigator.pushNamed(context, "/scanner");
                   },
@@ -284,6 +285,7 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
                   backgroundColor: Color(0xFF0FCBB3),
                   color: Colors.white,
                   borderSide: BorderSide.none,
+                  fontSize: 15,
                   onPressed: () {
                     Navigator.pushNamed(
                       context,

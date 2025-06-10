@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/ooui.dart';
+import 'package:yapeclon/widgets/buttons/button_main_widget.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   @override
@@ -64,7 +65,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       ),
                       SizedBox(height: 150),
 
-                      ElevatedButton(
+                      ButtonMainWidget(
+                        text: "Continuar",
                         onPressed: () {
                           Navigator.pushNamed(
                             context,
@@ -72,17 +74,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                             arguments: _phoneController.text,
                           );
                         },
-                        child: Text(
-                          "Continuar",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 34, 211, 191),
-                          minimumSize: Size(double.infinity, 45),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
+                        borderSide: BorderSide.none,
+                        backgroundColor: Color(0xFF0FCBB3),
+                        color: Colors.white,
                       ),
                     ],
                   ),

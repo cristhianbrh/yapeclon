@@ -3,6 +3,7 @@ import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:iconify_flutter/icons/teenyicons.dart';
 import 'package:yapeclon/layouts/layout_panel_white.dart';
+import 'package:yapeclon/widgets/buttons/button_main_widget.dart';
 
 class LoginEmailScreen extends StatefulWidget {
   @override
@@ -135,33 +136,23 @@ class _LoginEmailScreenState extends State<LoginEmailScreen> {
                         "nombre@gmail.com",
                       ),
                       SizedBox(height: 33),
+
                       Container(
                         height: 50,
                         width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed:
-                              () => {
-                                Navigator.pushNamed(
-                                  context,
-                                  "/login",
-                                  arguments: _emailDocController.text,
-                                ),
-                              },
-                          child: Text(
-                            'Continuar',
-                            style: TextStyle(
-                              color: Colors.black38,
-                              fontSize: 16,
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black12,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            elevation: 0,
-                            side: BorderSide.none,
-                          ),
+                        child: ButtonMainWidget(
+                          text: "Continuar",
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              "/login",
+                              arguments: _emailDocController.text,
+                            );
+                          },
+                          borderSide: BorderSide.none,
+                          backgroundColor: Colors.black12,
+                          color: Colors.black38,
+                          elevation: 0,
                         ),
                       ),
                     ],

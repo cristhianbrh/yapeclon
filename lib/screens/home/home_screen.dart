@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yapeclon/layouts/layout_main.dart';
+import 'package:yapeclon/widgets/buttons/button_main_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -52,44 +53,24 @@ class HomeScreen extends StatelessWidget {
               spacing: 15,
               children: [
                 Expanded(
-                  child: Container(
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed:
-                          () => {Navigator.pushNamed(context, "/login-email")},
-                      child: Text(
-                        'Ingresar',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white30,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        elevation: 0,
-                        side: BorderSide.none,
-                      ),
-                    ),
+                  child: ButtonMainWidget(
+                    text: "Ingresar",
+                    onPressed:
+                        () => {Navigator.pushNamed(context, "/login-email")},
+                    borderSide: BorderSide.none,
+                    backgroundColor: Colors.white30,
+                    color: Colors.white,
+                    elevation: 0,
                   ),
                 ),
                 Expanded(
-                  child: Container(
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed:
-                          () => {Navigator.pushNamed(context, "/crear-cuenta")},
-                      child: Text(
-                        'Crear Cuenta',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF0FCBB3),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        side: BorderSide.none,
-                      ),
-                    ),
+                  child: ButtonMainWidget(
+                    text: "Crear cuenta",
+                    onPressed:
+                        () => {Navigator.pushNamed(context, "/crear-cuenta")},
+                    borderSide: BorderSide.none,
+                    backgroundColor: Color(0xFF0FCBB3),
+                    color: Colors.white,
                   ),
                 ),
               ],

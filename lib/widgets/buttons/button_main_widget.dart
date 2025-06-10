@@ -9,6 +9,8 @@ class ButtonMainWidget extends StatelessWidget {
   final Color color;
   final Color backgroundColor;
   final BorderSide borderSide;
+  final double elevation;
+  final double fontSize;
 
   const ButtonMainWidget({
     super.key,
@@ -20,6 +22,8 @@ class ButtonMainWidget extends StatelessWidget {
     this.color = const Color(0xFF0FCBB3),
     this.backgroundColor = Colors.white,
     this.borderSide = const BorderSide(color: Color(0xFF0FCBB3), width: 1),
+    this.elevation = 1.0,
+    this.fontSize = 16,
   });
 
   @override
@@ -35,17 +39,15 @@ class ButtonMainWidget extends StatelessWidget {
     return ElevatedButton(
       onPressed: isDisabled || isLoading ? null : onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
+        backgroundColor: backgroundColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        side: BorderSide(color: Color(0xFF0FCBB3), width: 1),
+        side: borderSide,
+        elevation: elevation,
       ),
       child:
           isLoading
               ? CircularProgressIndicator(color: Color(0xFF0FCBB3))
-              : Text(
-                text,
-                style: TextStyle(color: Color(0xFF0FCBB3), fontSize: 15),
-              ),
+              : Text(text, style: TextStyle(color: color, fontSize: fontSize)),
     );
   }
 
@@ -56,11 +58,12 @@ class ButtonMainWidget extends StatelessWidget {
       label:
           isLoading
               ? CircularProgressIndicator(color: color)
-              : Text(text, style: TextStyle(color: color, fontSize: 15)),
+              : Text(text, style: TextStyle(color: color, fontSize: fontSize)),
       style: ElevatedButton.styleFrom(
         backgroundColor: backgroundColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         side: borderSide,
+        elevation: elevation,
       ),
     );
   }
