@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final email = ModalRoute.of(context)!.settings.arguments.toString();
+    final emailOrPhone = ModalRoute.of(context)!.settings.arguments.toString();
     final FirestoreService fs = FirestoreService();
 
     final List<Widget> items = List.generate(12, (index) {
@@ -61,8 +61,13 @@ class _LoginScreenState extends State<LoginScreen> {
               password = nuevoPassword;
             });
 
-            final userCurrent = await fs.getUserByEmailAndPassword(
-              email,
+            UserModel? userCurrent = await fs.getUserByEmailAndPassword(
+              emailOrPhone,
+              password,
+            );
+
+            userCurrent ??= await fs.getUserByPhoneAndPassword(
+              emailOrPhone,
               password,
             );
 

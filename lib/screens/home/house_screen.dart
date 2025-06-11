@@ -1,17 +1,17 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
-import 'package:yapeclon/data/models/transaction_model.dart';
-import 'package:yapeclon/data/models/user_model.dart';
-import 'package:yapeclon/data/services/firestore_service.dart';
-import 'package:yapeclon/layouts/layout_card_view_details.dart';
-import 'package:yapeclon/layouts/layout_main.dart';
-import 'package:yapeclon/layouts/layout_panel_white.dart';
-import 'package:yapeclon/main.dart';
 import 'package:yapeclon/widgets/buttons/button_main_widget.dart';
+import 'package:yapeclon/layouts/layout_card_view_details.dart';
 import 'package:yapeclon/widgets/header/top_header_house.dart';
+import 'package:yapeclon/data/services/firestore_service.dart';
+import 'package:yapeclon/data/models/transaction_model.dart';
 import 'package:yapeclon/widgets/services_card_widget.dart';
+import 'package:yapeclon/layouts/layout_panel_white.dart';
+import 'package:yapeclon/data/models/user_model.dart';
 import 'package:yapeclon/widgets/slider_widget.dart';
+import 'package:yapeclon/layouts/layout_main.dart';
+import 'package:flutter/material.dart';
+import 'package:yapeclon/main.dart';
 
 class HouseScreen extends StatefulWidget {
   @override

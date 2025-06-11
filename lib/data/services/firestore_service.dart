@@ -46,6 +46,26 @@ class FirestoreService {
     }
   }
 
+  Future<UserModel?> getUserByPhoneAndPassword(
+    String phone,
+    String password,
+  ) async {
+    final snapshot =
+        await _db
+            .collection("users")
+            .where("phone", isEqualTo: phone)
+            .where("password", isEqualTo: password)
+            .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      // Usuario encontrado
+      return UserModel.fromMap(snapshot.docs.first.data());
+    } else {
+      // No encontrado
+      return null;
+    }
+  }
+
   Future<void> addTransactionToUser(String userId, TransactionModel trx) async {
     final userRef = _db.collection('users').doc(userId);
 
