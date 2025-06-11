@@ -99,7 +99,7 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
                   typeView: EnumtypeView.right,
                   icon: Icons.remove_red_eye,
                   rightData: Text(
-                    "S/ " + user.money.toString(),
+                    "S/ " + user.money.toStringAsFixed(2),
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 16,
@@ -223,7 +223,7 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
                   icon: Icons.qr_code,
                   fontSize: 15,
                   onPressed: () {
-                    Navigator.pushNamed(context, "/scanner");
+                    Navigator.pushNamed(context, "/live-code", arguments: user);
                   },
                 ),
                 ButtonMainWidget(

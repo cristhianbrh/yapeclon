@@ -328,7 +328,9 @@ class _ViewYapearScreenState extends State<ViewYapearScreen> {
                 size: 30,
               ),
               onPressed: () {
-                Navigator.pop(context);
+                // Navigator.pop(context);
+                int count = 0;
+                Navigator.of(context).popUntil((_) => count++ >= 3);
               },
             ),
           ),

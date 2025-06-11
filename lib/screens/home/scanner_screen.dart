@@ -53,7 +53,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                         Container(
                           margin: const EdgeInsets.only(bottom: 12),
                           child: Text(
-                            'Código escaneado: \\n${result!.code}',
+                            'Código escaneado: ${result!.code}',
                             style: TextStyle(
                               color: Colors.purple,
                               fontSize: 16,
