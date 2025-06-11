@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:yapeclon/data/models/transaction_model.dart';
 import 'package:yapeclon/data/models/user_model.dart';
 import 'package:yapeclon/data/services/firestore_service.dart';
+import 'package:yapeclon/layouts/layout_card_view_details.dart';
 import 'package:yapeclon/layouts/layout_main.dart';
 import 'package:yapeclon/layouts/layout_panel_white.dart';
 import 'package:yapeclon/main.dart';
@@ -93,70 +94,16 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
             Column(
               spacing: 10,
               children: [
-                ElevatedButton(
-                  onPressed:
-                      () => {
-                        setState(() {
-                          _viewSaldo = !_viewSaldo;
-                        }),
-                      },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(62, 255, 255, 255),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 0,
-                      vertical: 0,
-                    ), // control del espacio interno
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      side: BorderSide.none,
-                    ),
-                    elevation: 0,
-                    tapTargetSize:
-                        MaterialTapTargetSize
-                            .shrinkWrap, // <-- evita que se expanda más de lo necesario
-                    minimumSize: Size(
-                      0,
-                      0,
-                    ), // <-- para permitir que el botón se achique
-                  ),
-                  child: Container(
-                    height: 50,
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color.fromARGB(61, 70, 70, 70),
-                          spreadRadius: 2,
-                          blurRadius: 6,
-                          offset: Offset(2, 3),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      spacing: 8,
-                      children: [
-                        Icon(Icons.remove_red_eye, color: Colors.purple),
-                        Text(
-                          "Mostrar saldo",
-                          style: TextStyle(
-                            color: const Color.fromARGB(255, 120, 30, 136),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Expanded(child: Container()),
-                        if (_viewSaldo)
-                          Text(
-                            "S/ " + user.money.toString(),
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                      ],
+                LayoutCardViewDetails(
+                  text: "Mostrar saldo",
+                  typeView: EnumtypeView.right,
+                  icon: Icons.remove_red_eye,
+                  rightData: Text(
+                    "S/ " + user.money.toString(),
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
