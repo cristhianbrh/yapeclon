@@ -47,20 +47,21 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
   @override
   void didPopNext() {
     super.didPopNext();
-    print('Volviste al HouseScreen');
+    print('print: Volviste al HouseScreen');
     _refrescarDatos(); // Aquí haces lo que quieras al volver al screen
   }
 
   void _refrescarDatos() async {
     if (userData == null) return;
+    print('print: ' + userData!.email);
 
     UserModel? userCurrentGet = await fs.getUserByEmailAndPassword(
       userData!.email,
       userData!.password,
     );
+    print('print: ' + userCurrentGet!.email);
 
     if (userCurrentGet != null) {
-      print(userCurrentGet.money);
       setState(() {
         userData = userCurrentGet;
       });

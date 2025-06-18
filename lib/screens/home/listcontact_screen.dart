@@ -260,7 +260,7 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
               arguments: ContactUserArgs(
                 contact:
                     Contact()
-                      ..displayName = 'Nuevo número'
+                      ..displayName = userEnv.fullName
                       ..phones = [Phone(number)],
                 user: user,
                 userRecept: userEnv,

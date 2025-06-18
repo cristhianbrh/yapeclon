@@ -44,6 +44,7 @@ class LiveDecodePageState extends State<LiveDecodePage> {
   Widget build(BuildContext context) {
     final FirestoreService fs = FirestoreService();
     final userData = ModalRoute.of(context)!.settings.arguments as UserModel;
+    print("print: " + userData.phone);
 
     return Scaffold(
       body: QRCodeDartScanView(
@@ -53,7 +54,8 @@ class LiveDecodePageState extends State<LiveDecodePage> {
         onCapture: (Result result) async {
           await _controller.stopScan();
           final numberQr = result.text.replaceFirst("+51", "");
-
+          print("print: numberQr: $numberQr");
+          print("print: userData.phone: ${userData.phone}");
           if (numberQr != userData.phone) {
             UserModel? userEnv = await fs.getUserByNumber(numberQr);
             if (userEnv != null) {

@@ -74,7 +74,6 @@ class _LoginScreenState extends State<LoginScreen> {
             // if (nuevoPassword == "123456") {
             if (userCurrent != null) {
               // Si es correcto, navegar y resetear después
-
               Navigator.pushNamed(context, "/house", arguments: userCurrent);
               Future.delayed(Duration(milliseconds: 100), () {
                 setState(() {
