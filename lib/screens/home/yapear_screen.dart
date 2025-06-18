@@ -10,6 +10,7 @@ import 'package:iconify_flutter/icons/ph.dart';
 import 'package:yapeclon/data/models/contact_user.dart';
 import 'package:yapeclon/data/models/transaction_model.dart';
 import 'package:yapeclon/data/models/user_model.dart';
+import 'package:yapeclon/widgets/buttons/button_main_widget.dart';
 
 class YapearScreen extends StatefulWidget {
   const YapearScreen({super.key});
@@ -159,101 +160,127 @@ class _YapearScreenState extends State<YapearScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 20),
 
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, "/house");
-                    },
-                    child: Text(
-                      'OTROS BANCOS',
-                      style: TextStyle(color: Color(0xFF0FCBB3), fontSize: 14),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      side: BorderSide(color: Color(0xFF0FCBB3), width: 1),
-                      // minimumSize: Size(double.infinity, 50),
+                  Expanded(
+                    child: ButtonMainWidget(
+                      text: 'OTROS BANCOS',
+                      fontSize: 14,
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/house");
+                      },
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final montoText = _amountController.text.trim();
-                      final monto = double.tryParse(montoText);
-
-                      if (monto == null || monto <= 0) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Ingresa un monto válido")),
-                        );
-                        return;
-                      }
-
-                      if (monto > contactUsers.user.money) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Saldo insuficiente")),
-                        );
-                        return;
-                      }
-
-                      final newTransaction = TransactionModel(
-                        id: DateTime.now().millisecondsSinceEpoch.toString(),
-                        amount: monto,
-                        date: DateTime.now(),
-                        description:
-                            "Yape a ${contactUsers.contact.displayName}",
-                        destinationPhone: contactUsers.user.phone,
-                      );
-
-                      final updatedUser = UserModel(
-                        phone: contactUsers.user.phone,
-                        typeDoc: contactUsers.user.typeDoc,
-                        document: contactUsers.user.document,
-                        email: contactUsers.user.email,
-                        password: contactUsers.user.password,
-                        fullName: contactUsers.user.fullName,
-                        money: contactUsers.user.money - monto,
-                        transactions: [
-                          ...contactUsers.user.transactions,
-                          newTransaction,
-                        ],
-                      );
-
-                      // GUARDAR EN FIRESTORE
-                      try {
-                        await FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(contactUsers.user.phone)
-                            .set(updatedUser.toMap());
-
-                        Navigator.pop(
-                          context,
-                        ); // Regresa a la pantalla anterior
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Yape realizado con éxito")),
-                        );
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Error al yapear: $e")),
-                        );
-                      }
-
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      'YAPEAR',
-                      style: TextStyle(
-                        color: Color.fromARGB(176, 67, 68, 67),
-                        fontSize: 14,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
+                  Expanded(
+                    child: ButtonMainWidget(
+                      text: 'YAPEAR',
+                      fontSize: 14,
+                      color: Color.fromARGB(176, 67, 68, 67),
                       backgroundColor: Color.fromARGB(255, 216, 210, 210),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      side: BorderSide(color: Color(0xFF0FCBB3), width: 1),
-                      // minimumSize: Size(double.infinity, 50),
+                      onPressed: () async {
+                        final montoText = _amountController.text.trim();
+                        final monto = double.tryParse(montoText);
+
+                        if (monto == null || monto <= 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Ingresa un monto válido")),
+                          );
+                          return;
+                        }
+
+                        if (monto > contactUsers.user.money) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Saldo insuficiente")),
+                          );
+                          return;
+                        }
+
+                        final date = DateTime.now();
+                        final datecurrent =
+                            date.millisecondsSinceEpoch.toString();
+
+                        final newTransaction = TransactionModel(
+                          id: datecurrent,
+                          amount: -monto,
+                          date: date,
+                          description:
+                              "Yape a ${contactUsers.contact.displayName}",
+                          destinationPhone: contactUsers.user.phone,
+                        );
+
+                        final newTransactionRecept = TransactionModel(
+                          id: datecurrent,
+                          amount: monto,
+                          date: date,
+                          description:
+                              "Te ha yapeado ${contactUsers.user.fullName}",
+                          destinationPhone: contactUsers.user.phone,
+                        );
+
+                        final updatedUser = UserModel(
+                          phone: contactUsers.user.phone,
+                          typeDoc: contactUsers.user.typeDoc,
+                          document: contactUsers.user.document,
+                          email: contactUsers.user.email,
+                          password: contactUsers.user.password,
+                          fullName: contactUsers.user.fullName,
+                          money: contactUsers.user.money - monto,
+                          transactions: [
+                            ...contactUsers.user.transactions,
+                            newTransaction,
+                          ],
+                        );
+                        final updatedUserRecept = UserModel(
+                          phone: contactUsers.userRecept.phone,
+                          typeDoc: contactUsers.userRecept.typeDoc,
+                          document: contactUsers.userRecept.document,
+                          email: contactUsers.userRecept.email,
+                          password: contactUsers.userRecept.password,
+                          fullName: contactUsers.userRecept.fullName,
+                          money: contactUsers.userRecept.money + monto,
+                          transactions: [
+                            ...contactUsers.userRecept.transactions,
+                            newTransactionRecept,
+                          ],
+                        );
+
+                        // GUARDAR EN FIRESTORE
+                        try {
+                          await FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(contactUsers.user.phone)
+                              .set(updatedUser.toMap());
+
+                          await FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(contactUsers.userRecept.phone)
+                              .set(updatedUserRecept.toMap());
+
+                          // Navigator.pop(
+                          //   context,
+                          // ); // Regresa a la pantalla anterior
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Yape realizado con éxito")),
+                          );
+
+                          Navigator.pushNamed(
+                            context,
+                            "/view-yapear",
+                            arguments: ContactUserArgs(
+                              contact: contactUsers.contact,
+                              user: contactUsers.user,
+                              userRecept: contactUsers.userRecept,
+                              cantidad: monto,
+                              date: date,
+                            ),
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Error al yapear: $e")),
+                          );
+                        }
+
+                        // Navigator.pop(context);
+                      },
                     ),
                   ),
                 ],

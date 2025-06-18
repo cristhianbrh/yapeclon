@@ -10,8 +10,10 @@ import 'package:yapeclon/screens/home/history_screen.dart';
 import 'package:yapeclon/screens/home/home_screen.dart';
 import 'package:yapeclon/screens/home/house_screen.dart';
 import 'package:yapeclon/screens/home/listcontact_screen.dart';
+import 'package:yapeclon/screens/home/live_decode.dart';
 import 'package:yapeclon/screens/home/options_creen.dart';
 import 'package:yapeclon/screens/home/scanner_screen.dart';
+import 'package:yapeclon/screens/home/view_yapear_screen.dart';
 import 'package:yapeclon/screens/home/yapear_screen.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver =
@@ -28,7 +30,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'YAPECLON',
-      initialRoute: '/fadcam',
+      initialRoute: '/home',
       navigatorObservers: [routeObserver],
       routes: {
         '/login': (context) => LoginScreen(),
@@ -43,6 +45,8 @@ class MyApp extends StatelessWidget {
         '/scanner': (context) => ScannerScreen(),
         '/yapear': (context) => YapearScreen(),
         '/option': (context) => OptionsCreen(),
+        '/view-yapear': (context) => ViewYapearScreen(),
+        '/live-code': (context) => LiveDecodePage(),
       },
     );
   }

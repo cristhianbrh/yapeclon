@@ -18,32 +18,26 @@ class _ScannerScreenState extends State<ScannerScreen> {
   Barcode? result;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  String? _lastProcessedCode;
+  bool _isProcessing = false;
 
   @override
   void reassemble() {
     super.reassemble();
     if (Platform.isAndroid) {
-      controller!.pauseCamera();
+      controller?.pauseCamera();
     }
-    controller!.resumeCamera();
+    controller?.resumeCamera();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(title: Text('Inicio')),
       body: SafeArea(
         child: Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: BoxDecoration(
-            // gradient: LinearGradient(
-            //   begin: Alignment.topCenter,
-            //   end: Alignment.bottomCenter,
-            //   colors: [Color.fromARGB(255, 148, 102, 168), Color(0xFF720e9e)],
-            // ),
-            color: Colors.transparent,
-          ),
+          decoration: BoxDecoration(color: Colors.transparent),
           child: Stack(
             children: [
               Positioned.fill(child: _buildQrView(context)),
@@ -55,16 +49,18 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      // if (result != null)
-                      //   Text(
-                      //     'Barcode Type:    Data: ${result!.code}',
-                      //     style: TextStyle(color: Colors.white),
-                      //   )
-                      // else
-                      //   const Text(
-                      //     'Scan a code',
-                      //     style: TextStyle(color: Colors.white),
-                      //   ),
+                      if (result != null)
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          child: Text(
+                            'Código escaneado: ${result!.code}',
+                            style: TextStyle(
+                              color: Colors.purple,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       Column(
                         children: <Widget>[
                           Container(
@@ -91,9 +87,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                           ),
                           Container(
                             height: 65,
-                            width:
-                                double
-                                    .infinity, // Esto hace que ocupe todo el ancho
+                            width: double.infinity,
                             margin: const EdgeInsets.all(8),
                             child: ElevatedButton(
                               onPressed: () async {
@@ -107,12 +101,12 @@ class _ScannerScreenState extends State<ScannerScreen> {
                                 ),
                               ),
                               child: Row(
-                                spacing: 10,
                                 children: [
                                   Iconify(
                                     Gridicons.add_image,
                                     color: Colors.purpleAccent,
                                   ),
+                                  SizedBox(width: 10),
                                   Text(
                                     'Subir una imagen con QR',
                                     style: TextStyle(
@@ -138,14 +132,11 @@ class _ScannerScreenState extends State<ScannerScreen> {
   }
 
   Widget _buildQrView(BuildContext context) {
-    // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
     var scanArea =
         (MediaQuery.of(context).size.width < 400 ||
                 MediaQuery.of(context).size.height < 400)
             ? 150.0
             : 300.0;
-    // To ensure the Scanner view is properly sizes after rotation
-    // we need to listen for Flutter SizeChanged notification and update controller
     return QRView(
       key: qrKey,
       onQRViewCreated: _onQRViewCreated,
@@ -164,11 +155,32 @@ class _ScannerScreenState extends State<ScannerScreen> {
     setState(() {
       this.controller = controller;
     });
-    controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-      });
-    });
+    controller.scannedDataStream.listen((scanData) async {
+      if (_isProcessing) return;
+      if (scanData.code == null) return;
+      if (_lastProcessedCode == scanData.code) return;
+      _isProcessing = true;
+      _lastProcessedCode = scanData.code;
+      if (scanData.code == '999111ab') {
+        try {
+          await controller.pauseCamera();
+        } catch (e) {
+          // Si la cámara ya está pausada o hay error, ignora
+        }
+        if (mounted) {
+          Navigator.pushReplacementNamed(context, '/otro_link');
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            result = scanData;
+          });
+        }
+        // Espera un poco antes de permitir otro escaneo para evitar sobrecarga
+        await Future.delayed(Duration(milliseconds: 500));
+      }
+      _isProcessing = false;
+    }, cancelOnError: false);
   }
 
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
