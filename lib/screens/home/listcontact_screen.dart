@@ -17,6 +17,8 @@ class ListcontactScreen extends StatefulWidget {
 
 class _ListcontactScreenState extends State<ListcontactScreen> {
   List<Contact> _contacts = [];
+  List<Contact> _filteredContacts = [];
+  String _searchText = '';
 
   @override
   void initState() {
@@ -51,16 +53,48 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
 
       setState(() {
         _contacts = contacts.values.toList();
+        _filteredContacts = _contacts;
       });
     } else {
       print("Permiso denegado para leer contactos.");
     }
   }
 
+  void _onSearchChanged(String value) {
+    setState(() {
+      _searchText = value;
+      if (value.isEmpty) {
+        _filteredContacts = _contacts;
+      } else {
+        final search = value.replaceAll(RegExp(r'\D'), '');
+        _filteredContacts =
+            _contacts.where((contact) {
+              final name = contact.displayName.toLowerCase();
+              final phone =
+                  contact.phones.isNotEmpty
+                      ? contact.phones.first.number.replaceAll(
+                        RegExp(r'\D'),
+                        '',
+                      )
+                      : '';
+              return name.contains(value.toLowerCase()) ||
+                  phone.contains(search);
+            }).toList();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final userData = ModalRoute.of(context)!.settings.arguments as UserModel;
-
+    final searchNumber = _searchText.replaceAll(RegExp(r'\D'), '');
+    final exists = _filteredContacts.any(
+      (contact) =>
+          contact.phones.isNotEmpty &&
+          contact.phones.first.number
+              .replaceAll(RegExp(r'\D'), '')
+              .contains(searchNumber),
+    );
     return Scaffold(
       // appBar: AppBar(title: Text('Inicio')),
       body: SafeArea(
@@ -88,9 +122,10 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                spacing: 10,
+                // spacing: 10, // Remove, not valid for Row
                 children: [
                   Iconify(Subway.search, color: Colors.black26),
+                  SizedBox(width: 10),
                   Expanded(
                     child: TextField(
                       keyboardType: TextInputType.text,
@@ -102,6 +137,7 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
                           fontSize: 15,
                         ),
                       ),
+                      onChanged: _onSearchChanged,
                     ),
                   ),
                 ],
@@ -114,13 +150,16 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 25),
                   child: Column(
-                    children:
-                        _contacts
-                            .map(
-                              (contact) =>
-                                  _ContactView(contact, userData, context),
-                            )
-                            .toList(),
+                    children: [
+                      ..._filteredContacts
+                          .map(
+                            (contact) =>
+                                _ContactView(contact, userData, context),
+                          )
+                          .toList(),
+                      if (_searchText.isNotEmpty && !exists)
+                        _NewNumberView(_searchText, userData, context),
+                    ],
                   ),
                 ),
               ),
@@ -164,7 +203,9 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
                 // Aquí colocas lo que debe pasar al hacer clic
                 FirestoreService fs = new FirestoreService();
                 UserModel? userEnv = await fs.getUserByNumber(
-                  contact.phones.isNotEmpty ? contact.phones.first.number : '',
+                  contact.phones.isNotEmpty
+                      ? contact.phones.first.number.replaceFirst("+51", "")
+                      : '',
                 );
                 if (userEnv != null) {
                   Navigator.pushNamed(
@@ -193,6 +234,50 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _NewNumberView(String number, UserModel user, context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.black12, width: 1)),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: ListTile(
+        title: Text('Nuevo número'),
+        subtitle: Text(number),
+        onTap: () async {
+          FirestoreService fs = FirestoreService();
+          UserModel? userEnv = await fs.getUserByNumber(
+            number.replaceFirst("+51", ""),
+          );
+          if (userEnv != null) {
+            Navigator.pushNamed(
+              context,
+              "/yapear",
+              arguments: ContactUserArgs(
+                contact:
+                    Contact()
+                      ..displayName = userEnv.fullName
+                      ..phones = [Phone(number)],
+                user: user,
+                userRecept: userEnv,
+                cantidad: null,
+                date: null,
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("El usuario no tiene Yape."),
+                duration: Duration(seconds: 2),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          }
+        },
       ),
     );
   }

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:iconify_flutter/icons/teenyicons.dart';
+import 'package:yapeclon/layouts/layout_panel_white.dart';
+import 'package:yapeclon/widgets/buttons/button_main_widget.dart';
+import 'package:yapeclon/widgets/inputs/input_main_widget.dart';
 
 class LoginEmailScreen extends StatefulWidget {
   @override
@@ -115,26 +118,7 @@ class _LoginEmailScreenState extends State<LoginEmailScreen> {
                 ),
               ),
               Expanded(
-                child: Container(
-                  padding: EdgeInsets.only(
-                    left: 20,
-                    bottom: 20,
-                    right: 20,
-                    top: 33,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color.fromARGB(61, 70, 70, 70),
-                        spreadRadius: 2,
-                        blurRadius: 6,
-                        offset: Offset(2, 3),
-                      ),
-                    ],
-                  ),
-
+                child: LayoutPanelWhite(
                   child: Column(
                     children: [
                       Text(
@@ -146,40 +130,30 @@ class _LoginEmailScreenState extends State<LoginEmailScreen> {
                         ),
                       ),
                       SizedBox(height: 50),
-                      _buildTextField(
-                        "Correo electrónico",
-                        TextInputType.emailAddress,
-                        _emailDocController,
-                        "nombre@gmail.com",
+                      InputMainWidget(
+                        label: "Correo electrónico o número de teléfono",
+                        inputType: TextInputType.emailAddress,
+                        controller: _emailDocController,
+                        hint: "nombre@gmail.com o 999999999",
                       ),
                       SizedBox(height: 33),
+
                       Container(
                         height: 50,
                         width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed:
-                              () => {
-                                Navigator.pushNamed(
-                                  context,
-                                  "/login",
-                                  arguments: _emailDocController.text,
-                                ),
-                              },
-                          child: Text(
-                            'Continuar',
-                            style: TextStyle(
-                              color: Colors.black38,
-                              fontSize: 16,
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black12,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            elevation: 0,
-                            side: BorderSide.none,
-                          ),
+                        child: ButtonMainWidget(
+                          text: "Continuar",
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              "/login",
+                              arguments: _emailDocController.text,
+                            );
+                          },
+                          borderSide: BorderSide.none,
+                          backgroundColor: Colors.black12,
+                          color: Colors.black38,
+                          elevation: 0,
                         ),
                       ),
                     ],
@@ -192,41 +166,6 @@ class _LoginEmailScreenState extends State<LoginEmailScreen> {
       ),
     );
   }
-}
-
-Widget _buildTextField(
-  String label,
-  TextInputType inputType,
-  TextEditingController controller, [
-  String? hint,
-]) {
-  return Column(
-    spacing: 0,
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        label,
-        style: TextStyle(
-          color: Color.fromARGB(62, 34, 34, 17),
-
-          fontWeight: FontWeight.w600,
-          fontSize: 12,
-          letterSpacing: .1,
-        ),
-      ),
-      TextField(
-        keyboardType: inputType,
-        controller: controller,
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: TextStyle(
-            color: Color.fromARGB(62, 34, 34, 17),
-            fontSize: 12,
-          ),
-        ),
-      ),
-    ],
-  );
 }
 
 Widget _ButtonHelp() {

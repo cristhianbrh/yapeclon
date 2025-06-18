@@ -10,6 +10,7 @@ import 'package:yapeclon/screens/home/history_screen.dart';
 import 'package:yapeclon/screens/home/home_screen.dart';
 import 'package:yapeclon/screens/home/house_screen.dart';
 import 'package:yapeclon/screens/home/listcontact_screen.dart';
+import 'package:yapeclon/screens/home/live_decode.dart';
 import 'package:yapeclon/screens/home/options_creen.dart';
 import 'package:yapeclon/screens/home/scanner_screen.dart';
 import 'package:yapeclon/screens/home/view_yapear_screen.dart';
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
         '/yapear': (context) => YapearScreen(),
         '/option': (context) => OptionsCreen(),
         '/view-yapear': (context) => ViewYapearScreen(),
+        '/live-code': (context) => LiveDecodePage(),
       },
     );
   }
