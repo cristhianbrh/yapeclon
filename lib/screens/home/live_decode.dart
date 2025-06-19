@@ -56,7 +56,7 @@ class LiveDecodePageState extends State<LiveDecodePage> {
           final numberQr = result.text.replaceFirst("+51", "");
           print("print: numberQr: $numberQr");
           print("print: userData.phone: ${userData.phone}");
-          if (numberQr != userData.phone) {
+          if (RegExp(r'^\d+$').hasMatch(numberQr)) {
             UserModel? userEnv = await fs.getUserByNumber(numberQr);
             if (userEnv != null) {
               Navigator.pushNamed(

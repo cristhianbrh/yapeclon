@@ -34,10 +34,16 @@ class _YapearScreenState extends State<YapearScreen> {
   }
 
   void _validateYapearButton() {
+    final contactUsers =
+        ModalRoute.of(context)!.settings.arguments as ContactUserArgs;
     final montoText = _amountController.text.trim();
     final monto = double.tryParse(montoText);
+    final isSameUser =
+        contactUsers.user.phone.replaceFirst("+51", "") ==
+        contactUsers.userRecept.phone.replaceFirst("+51", "");
     setState(() {
-      isYapearEnabled = monto != null && monto > 0 && monto <= userMoney;
+      isYapearEnabled =
+          monto != null && monto > 0 && monto <= userMoney && !isSameUser;
     });
   }
 
