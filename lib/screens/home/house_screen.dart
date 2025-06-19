@@ -52,13 +52,11 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
 
   void _refrescarDatos() async {
     if (userData == null) return;
-    print('print: ' + userData!.email);
 
     UserModel? userCurrentGet = await fs.getUserByEmailAndPassword(
       userData!.email,
       userData!.password,
     );
-    print('print: ' + userCurrentGet!.email);
 
     if (userCurrentGet != null) {
       setState(() {
