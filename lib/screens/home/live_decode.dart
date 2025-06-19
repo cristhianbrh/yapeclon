@@ -70,6 +70,14 @@ class LiveDecodePageState extends State<LiveDecodePage> {
                   date: null,
                 ),
               );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("El usuario no tiene Yape."),
+                  duration: Duration(seconds: 1),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
             }
           }
           print("addmer");
