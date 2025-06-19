@@ -21,6 +21,32 @@ class YapearScreen extends StatefulWidget {
 
 class _YapearScreenState extends State<YapearScreen> {
   final TextEditingController _amountController = TextEditingController();
+  bool isYapearEnabled = false;
+  double userMoney = 0;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final contactUsers =
+        ModalRoute.of(context)!.settings.arguments as ContactUserArgs;
+    userMoney = contactUsers.user.money;
+    _amountController.addListener(_validateYapearButton);
+  }
+
+  void _validateYapearButton() {
+    final montoText = _amountController.text.trim();
+    final monto = double.tryParse(montoText);
+    setState(() {
+      isYapearEnabled = monto != null && monto > 0 && monto <= userMoney;
+    });
+  }
+
+  @override
+  void dispose() {
+    _amountController.removeListener(_validateYapearButton);
+    _amountController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -173,114 +199,132 @@ class _YapearScreenState extends State<YapearScreen> {
                     child: ButtonMainWidget(
                       text: 'YAPEAR',
                       fontSize: 14,
-                      color: Color.fromARGB(176, 67, 68, 67),
-                      backgroundColor: Color.fromARGB(255, 216, 210, 210),
-                      onPressed: () async {
-                        final montoText = _amountController.text.trim();
-                        final monto = double.tryParse(montoText);
+                      color:
+                          isYapearEnabled
+                              ? Colors.white
+                              : Color.fromARGB(176, 67, 68, 67),
+                      backgroundColor:
+                          isYapearEnabled
+                              ? Color(0xFF0FCBB3)
+                              : Color.fromARGB(255, 216, 210, 210),
+                      isDisabled: !isYapearEnabled,
+                      onPressed:
+                          isYapearEnabled
+                              ? () async {
+                                final montoText = _amountController.text.trim();
+                                final monto = double.tryParse(montoText);
 
-                        if (monto == null || monto <= 0) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Ingresa un monto válido")),
-                          );
-                          return;
-                        }
+                                if (monto == null || monto <= 0) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text("Ingresa un monto válido"),
+                                    ),
+                                  );
+                                  return;
+                                }
 
-                        if (monto > contactUsers.user.money) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Saldo insuficiente")),
-                          );
-                          return;
-                        }
+                                if (monto > contactUsers.user.money) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text("Saldo insuficiente"),
+                                    ),
+                                  );
+                                  return;
+                                }
 
-                        final date = DateTime.now();
-                        final datecurrent =
-                            date.millisecondsSinceEpoch.toString();
+                                final date = DateTime.now();
+                                final datecurrent =
+                                    date.millisecondsSinceEpoch.toString();
 
-                        final newTransaction = TransactionModel(
-                          id: datecurrent,
-                          amount: -monto,
-                          date: date,
-                          description:
-                              "Yape a ${contactUsers.contact.displayName}",
-                          destinationPhone: contactUsers.user.phone,
-                        );
+                                final newTransaction = TransactionModel(
+                                  id: datecurrent,
+                                  amount: -monto,
+                                  date: date,
+                                  description:
+                                      "Yape a ${contactUsers.contact.displayName}",
+                                  destinationPhone: contactUsers.user.phone,
+                                );
 
-                        final newTransactionRecept = TransactionModel(
-                          id: datecurrent,
-                          amount: monto,
-                          date: date,
-                          description:
-                              "Te ha yapeado ${contactUsers.user.fullName}",
-                          destinationPhone: contactUsers.user.phone,
-                        );
+                                final newTransactionRecept = TransactionModel(
+                                  id: datecurrent,
+                                  amount: monto,
+                                  date: date,
+                                  description:
+                                      "Te ha yapeado ${contactUsers.user.fullName}",
+                                  destinationPhone: contactUsers.user.phone,
+                                );
 
-                        final updatedUser = UserModel(
-                          phone: contactUsers.user.phone,
-                          typeDoc: contactUsers.user.typeDoc,
-                          document: contactUsers.user.document,
-                          email: contactUsers.user.email,
-                          password: contactUsers.user.password,
-                          fullName: contactUsers.user.fullName,
-                          money: contactUsers.user.money - monto,
-                          transactions: [
-                            ...contactUsers.user.transactions,
-                            newTransaction,
-                          ],
-                        );
-                        final updatedUserRecept = UserModel(
-                          phone: contactUsers.userRecept.phone,
-                          typeDoc: contactUsers.userRecept.typeDoc,
-                          document: contactUsers.userRecept.document,
-                          email: contactUsers.userRecept.email,
-                          password: contactUsers.userRecept.password,
-                          fullName: contactUsers.userRecept.fullName,
-                          money: contactUsers.userRecept.money + monto,
-                          transactions: [
-                            ...contactUsers.userRecept.transactions,
-                            newTransactionRecept,
-                          ],
-                        );
+                                final updatedUser = UserModel(
+                                  phone: contactUsers.user.phone,
+                                  typeDoc: contactUsers.user.typeDoc,
+                                  document: contactUsers.user.document,
+                                  email: contactUsers.user.email,
+                                  password: contactUsers.user.password,
+                                  fullName: contactUsers.user.fullName,
+                                  money: contactUsers.user.money - monto,
+                                  transactions: [
+                                    ...contactUsers.user.transactions,
+                                    newTransaction,
+                                  ],
+                                );
+                                final updatedUserRecept = UserModel(
+                                  phone: contactUsers.userRecept.phone,
+                                  typeDoc: contactUsers.userRecept.typeDoc,
+                                  document: contactUsers.userRecept.document,
+                                  email: contactUsers.userRecept.email,
+                                  password: contactUsers.userRecept.password,
+                                  fullName: contactUsers.userRecept.fullName,
+                                  money: contactUsers.userRecept.money + monto,
+                                  transactions: [
+                                    ...contactUsers.userRecept.transactions,
+                                    newTransactionRecept,
+                                  ],
+                                );
 
-                        // GUARDAR EN FIRESTORE
-                        try {
-                          await FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(contactUsers.user.phone)
-                              .set(updatedUser.toMap());
+                                // GUARDAR EN FIRESTORE
+                                try {
+                                  await FirebaseFirestore.instance
+                                      .collection('users')
+                                      .doc(contactUsers.user.phone)
+                                      .set(updatedUser.toMap());
 
-                          await FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(contactUsers.userRecept.phone)
-                              .set(updatedUserRecept.toMap());
+                                  await FirebaseFirestore.instance
+                                      .collection('users')
+                                      .doc(contactUsers.userRecept.phone)
+                                      .set(updatedUserRecept.toMap());
 
-                          // Navigator.pop(
-                          //   context,
-                          // ); // Regresa a la pantalla anterior
+                                  // Navigator.pop(
+                                  //   context,
+                                  // ); // Regresa a la pantalla anterior
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Yape realizado con éxito")),
-                          );
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text("Yape realizado con éxito"),
+                                    ),
+                                  );
 
-                          Navigator.pushNamed(
-                            context,
-                            "/view-yapear",
-                            arguments: ContactUserArgs(
-                              contact: contactUsers.contact,
-                              user: contactUsers.user,
-                              userRecept: contactUsers.userRecept,
-                              cantidad: monto,
-                              date: date,
-                            ),
-                          );
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Error al yapear: $e")),
-                          );
-                        }
+                                  Navigator.pushNamed(
+                                    context,
+                                    "/view-yapear",
+                                    arguments: ContactUserArgs(
+                                      contact: contactUsers.contact,
+                                      user: contactUsers.user,
+                                      userRecept: contactUsers.userRecept,
+                                      cantidad: monto,
+                                      date: date,
+                                    ),
+                                  );
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text("Error al yapear: $e"),
+                                    ),
+                                  );
+                                }
 
-                        // Navigator.pop(context);
-                      },
+                                // Navigator.pop(context);
+                              }
+                              : () {},
                     ),
                   ),
                 ],
