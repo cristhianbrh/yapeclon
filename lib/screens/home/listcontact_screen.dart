@@ -31,12 +31,12 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
 
   Future<void> _getContacts() async {
     if (await FlutterContacts.requestPermission()) {
-      final contacts_get = await FlutterContacts.getContacts(
+      final contactsGet = await FlutterContacts.getContacts(
         withProperties: true,
       );
       final contacts = <String, Contact>{};
 
-      for (var contact in contacts_get) {
+      for (var contact in contactsGet) {
         final name = normalizeName(contact.displayName);
         final phone =
             contact.phones.isNotEmpty

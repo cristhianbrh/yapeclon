@@ -1,10 +1,7 @@
-import 'dart:math';
-
 import 'package:yapeclon/widgets/buttons/button_main_widget.dart';
 import 'package:yapeclon/layouts/layout_card_view_details.dart';
 import 'package:yapeclon/widgets/header/top_header_house.dart';
 import 'package:yapeclon/data/services/firestore_service.dart';
-import 'package:yapeclon/data/models/transaction_model.dart';
 import 'package:yapeclon/widgets/services_card_widget.dart';
 import 'package:yapeclon/layouts/layout_panel_white.dart';
 import 'package:yapeclon/data/models/user_model.dart';
@@ -12,14 +9,16 @@ import 'package:yapeclon/widgets/slider_widget.dart';
 import 'package:yapeclon/layouts/layout_main.dart';
 import 'package:flutter/material.dart';
 import 'package:yapeclon/main.dart';
+import 'package:yapeclon/widgets/views/movement_widget.dart';
 
 class HouseScreen extends StatefulWidget {
+  const HouseScreen({super.key});
+
   @override
   State<HouseScreen> createState() => _HouseScreenState();
 }
 
 class _HouseScreenState extends State<HouseScreen> with RouteAware {
-  bool _viewSaldo = false;
   bool _viewMovements = false;
   UserModel? userData;
   FirestoreService fs = FirestoreService();
@@ -93,14 +92,14 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
-              spacing: 10,
+              spacing: 10, // Quitar si no es necesario
               children: [
                 LayoutCardViewDetails(
                   text: "Mostrar saldo",
                   typeView: EnumtypeView.right,
                   icon: Icons.remove_red_eye,
                   rightData: Text(
-                    "S/ " + user.money.toStringAsFixed(2),
+                    "S/ ${user.money.toStringAsFixed(2)}",
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 16,
@@ -126,37 +125,25 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
                     children: [
                       ElevatedButton(
                         onPressed:
-                            () => {
-                              setState(() {
-                                _viewMovements = !_viewMovements;
-                              }),
-                            },
+                            () => setState(
+                              () => _viewMovements = !_viewMovements,
+                            ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.transparent,
-                          shadowColor:
-                              Colors.transparent, // <-- quitar la sombra
-                          surfaceTintColor:
-                              Colors
-                                  .transparent, // <-- quitar el efecto de elevación
-                          splashFactory:
-                              NoSplash
-                                  .splashFactory, // <-- quitar el splash de clic
+                          shadowColor: Colors.transparent,
+                          surfaceTintColor: Colors.transparent,
+                          splashFactory: NoSplash.splashFactory,
                           padding: EdgeInsets.symmetric(
                             horizontal: 0,
                             vertical: 0,
-                          ), // control del espacio interno
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                             side: BorderSide.none,
                           ),
                           elevation: 0,
-                          tapTargetSize:
-                              MaterialTapTargetSize
-                                  .shrinkWrap, // <-- evita que se expanda más de lo necesario
-                          minimumSize: Size(
-                            0,
-                            0,
-                          ), // <-- para permitir que el botón se achique
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          minimumSize: Size(0, 0),
                         ).copyWith(
                           overlayColor: WidgetStateProperty.all(
                             Colors.transparent,
@@ -168,9 +155,9 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Row(
-                                spacing: 8,
                                 children: [
                                   Icon(Icons.filter_list, color: Colors.purple),
+                                  SizedBox(width: 8),
                                   Text(
                                     "Mostrar movimientos",
                                     style: TextStyle(
@@ -187,7 +174,9 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
                                 ],
                               ),
                               Icon(
-                                Icons.expand_more,
+                                _viewMovements
+                                    ? Icons.expand_less
+                                    : Icons.expand_more,
                                 color: Colors.black26,
                                 size: 30,
                               ),
@@ -196,14 +185,14 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
                         ),
                       ),
                       if (_viewMovements)
-                        Container(
+                        SizedBox(
                           height: 140,
                           child: SingleChildScrollView(
                             child: Column(
                               children:
-                                  user.transactions.map((tx) {
-                                    return _movementWidget(tx);
-                                  }).toList(),
+                                  user.transactions
+                                      .map((tx) => MovementWidget(tx))
+                                      .toList(),
                             ),
                           ),
                         ),
@@ -217,7 +206,6 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
               crossAxisSpacing: 15,
               shrinkWrap: true,
               childAspectRatio: 3,
-
               children: [
                 ButtonMainWidget(
                   text: 'ESCANEAR QR',
@@ -251,67 +239,4 @@ class _HouseScreenState extends State<HouseScreen> with RouteAware {
   }
 }
 
-String _formatDate(DateTime date) {
-  final months = [
-    'ene',
-    'feb',
-    'mar',
-    'abr',
-    'may',
-    'jun',
-    'jul',
-    'ago',
-    'sep',
-    'oct',
-    'nov',
-    'dic',
-  ];
-  final day = date.day;
-  final month = months[date.month - 1];
-  final year = date.year;
-  final hour = date.hour.toString().padLeft(2, '0');
-  final minute = date.minute.toString().padLeft(2, '0');
-
-  return "$day $month. $year - $hour:$minute";
-}
-
-Widget _movementWidget(TransactionModel tx) {
-  return Container(
-    padding: EdgeInsetsDirectional.symmetric(vertical: 10),
-    child: Row(
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              tx.description.substring(0, min(21, tx.description.length)) +
-                  "...",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 17,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            Text(
-              _formatDate(tx.date),
-              style: TextStyle(
-                color: Colors.black45,
-                fontSize: 17,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-        ),
-        Expanded(child: Container()),
-        Text(
-          "${tx.amount < 0 ? "-" : ""} S/ ${tx.amount.toStringAsFixed(2)}",
-          style: TextStyle(
-            color: tx.amount > 0 ? Colors.black : Colors.redAccent,
-            fontSize: 17,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    ),
-  );
-}
+// Widget para mostrar un movimiento
