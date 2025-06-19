@@ -4,6 +4,8 @@ import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:yapeclon/data/models/user_model.dart';
 import 'package:yapeclon/data/services/firestore_service.dart';
 import 'package:yapeclon/layouts/layout_main.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
 
 class CreatePasswordScreen extends StatefulWidget {
   @override
@@ -78,7 +80,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                 document: userData.document,
                 email: userData.email,
                 phone: userData.phone,
-                password: nuevoPassword,
+                password: hashPassword(nuevoPassword),
                 fullName: userData.fullName,
               );
               await fs.addUser(newUser);
@@ -252,4 +254,11 @@ Widget _buildIndicatorPasswordLength(String password) {
         )),
     ],
   );
+}
+
+String hashPassword(String password) {
+  // Usando SHA-256 para hashear la contraseña
+  final bytes = utf8.encode(password);
+  final digest = sha256.convert(bytes);
+  return digest.toString();
 }

@@ -30,13 +30,13 @@ class FirestoreService {
     String email,
     String password,
   ) async {
+    final hashed = hashPassword(password);
     final snapshot =
         await _db
             .collection("users")
             .where("email", isEqualTo: email)
-            .where("password", isEqualTo: password)
+            .where("password", isEqualTo: hashed)
             .get();
-
     if (snapshot.docs.isNotEmpty) {
       // Usuario encontrado
       return UserModel.fromMap(snapshot.docs.first.data());
@@ -50,13 +50,13 @@ class FirestoreService {
     String phone,
     String password,
   ) async {
+    final hashed = hashPassword(password);
     final snapshot =
         await _db
             .collection("users")
             .where("phone", isEqualTo: phone)
-            .where("password", isEqualTo: password)
+            .where("password", isEqualTo: hashed)
             .get();
-
     if (snapshot.docs.isNotEmpty) {
       // Usuario encontrado
       return UserModel.fromMap(snapshot.docs.first.data());
