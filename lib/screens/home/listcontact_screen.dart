@@ -3,10 +3,13 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/material_symbols.dart';
 import 'package:iconify_flutter/icons/subway.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:yapeclon/data/models/contact_user.dart';
 import 'package:yapeclon/data/models/user_model.dart';
-import 'package:yapeclon/data/services/firestore_service.dart';
+import 'package:yapeclon/widgets/cards/contact_view_widget.dart';
+import 'package:yapeclon/widgets/cards/new_number_view_widget.dart';
+
+// Utils para normalizar
+String normalizeName(String name) => name.trim().toLowerCase();
+String normalizePhone(String phone) => phone.replaceAll(RegExp(r'\D'), '');
 
 class ListcontactScreen extends StatefulWidget {
   const ListcontactScreen({super.key});
@@ -34,23 +37,18 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
       final contacts = <String, Contact>{};
 
       for (var contact in contacts_get) {
-        // Normaliza nombre y número para comparar
-        final name = contact.displayName.trim().toLowerCase();
+        final name = normalizeName(contact.displayName);
         final phone =
             contact.phones.isNotEmpty
-                ? contact.phones.first.number.replaceAll(RegExp(r'\D'), '')
+                ? normalizePhone(contact.phones.first.number)
                 : '';
-
         final key = '$name|$phone';
-
         if (!contacts.containsKey(key)) {
           contacts[key] = contact;
         } else {
-          // El contacto ya existe, lo puedes eliminar si lo deseas
           await FlutterContacts.deleteContact(contact);
         }
       }
-
       setState(() {
         _contacts = contacts.values.toList();
         _filteredContacts = _contacts;
@@ -66,22 +64,108 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
       if (value.isEmpty) {
         _filteredContacts = _contacts;
       } else {
-        final search = value.replaceAll(RegExp(r'\D'), '');
+        final search = normalizePhone(value);
         _filteredContacts =
             _contacts.where((contact) {
-              final name = contact.displayName.toLowerCase();
+              final name = normalizeName(contact.displayName);
               final phone =
                   contact.phones.isNotEmpty
-                      ? contact.phones.first.number.replaceAll(
-                        RegExp(r'\D'),
-                        '',
-                      )
+                      ? normalizePhone(contact.phones.first.number)
                       : '';
               return name.contains(value.toLowerCase()) ||
                   phone.contains(search);
             }).toList();
       }
     });
+  }
+
+  // Header widgets ahora públicos
+  Widget topHeader(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+      child: Row(
+        children: [
+          IconButton(
+            icon: Iconify(
+              MaterialSymbols.close_rounded,
+              color: Colors.black45,
+              size: 30,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          Text(
+            "Yapear",
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget headerPageView() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            spreadRadius: -5,
+            blurRadius: 5,
+            offset: Offset(0, 7),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  bottom: BorderSide(color: Colors.purple, width: 5),
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  "Contactos",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    color: Colors.purple,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  bottom: BorderSide(color: Colors.transparent, width: 5),
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  "Yapeos pendientes",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    color: Colors.black54,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -101,8 +185,8 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
         child: Column(
           // Usar Column en lugar de SingleChildScrollView para evitar el error
           children: [
-            _topHeader(context),
-            _headerPageView(),
+            topHeader(context),
+            headerPageView(),
             SizedBox(height: 20),
             Container(
               height: 60,
@@ -154,11 +238,11 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
                       ..._filteredContacts
                           .map(
                             (contact) =>
-                                _ContactView(contact, userData, context),
+                                ContactViewWidget(contact, userData, context),
                           )
                           .toList(),
                       if (_searchText.isNotEmpty && !exists)
-                        _NewNumberView(_searchText, userData, context),
+                        NewNumberViewWidget(_searchText, userData, context),
                     ],
                   ),
                 ),
@@ -166,207 +250,6 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _ContactView(Contact contact, UserModel user, context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.black12, width: 1)),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                contact.displayName,
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-              ),
-              Text(
-                contact.phones.isNotEmpty ? contact.phones.first.number : '',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black38,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              SizedBox(height: 10),
-            ],
-          ),
-          Positioned.fill(
-            child: GestureDetector(
-              onTap: () async {
-                // Aquí colocas lo que debe pasar al hacer clic
-                FirestoreService fs = new FirestoreService();
-                UserModel? userEnv = await fs.getUserByNumber(
-                  contact.phones.isNotEmpty
-                      ? contact.phones.first.number.replaceFirst("+51", "")
-                      : '',
-                );
-                if (userEnv != null) {
-                  Navigator.pushNamed(
-                    context,
-                    "/yapear",
-                    arguments: ContactUserArgs(
-                      contact: contact,
-                      user: user,
-                      userRecept: userEnv,
-                      cantidad: null,
-                      date: null,
-                    ),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("El usuario no tiene Yape."),
-                      duration: Duration(seconds: 2),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                }
-              },
-              behavior: HitTestBehavior.translucent,
-              child: Container(), // Invisible
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _NewNumberView(String number, UserModel user, context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.black12, width: 1)),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: ListTile(
-        title: Text('Nuevo número'),
-        subtitle: Text(number),
-        onTap: () async {
-          FirestoreService fs = FirestoreService();
-          UserModel? userEnv = await fs.getUserByNumber(
-            number.replaceFirst("+51", ""),
-          );
-          if (userEnv != null) {
-            Navigator.pushNamed(
-              context,
-              "/yapear",
-              arguments: ContactUserArgs(
-                contact:
-                    Contact()
-                      ..displayName = userEnv.fullName
-                      ..phones = [Phone(number)],
-                user: user,
-                userRecept: userEnv,
-                cantidad: null,
-                date: null,
-              ),
-            );
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("El usuario no tiene Yape."),
-                duration: Duration(seconds: 2),
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-          }
-        },
-      ),
-    );
-  }
-
-  Widget _topHeader(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-      child: Row(
-        spacing: 20,
-        children: [
-          IconButton(
-            icon: Iconify(
-              MaterialSymbols.close_rounded,
-              color: Colors.black45,
-              size: 30,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          Text(
-            "Yapear",
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _headerPageView() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12, // Sombra negra con opacidad
-            spreadRadius: -5, // Qué tanto se extiende
-            blurRadius: 5, // Qué tan difusa es la sombra
-            offset: Offset(0, 7), // Desplazamiento (x, y)
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border(
-                  bottom: BorderSide(color: Colors.purple, width: 5),
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  "Contactos",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: Colors.purple,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: Container(
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border(
-                  bottom: BorderSide(color: Colors.transparent, width: 5),
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  "Yapeos pendientes",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: Colors.black54,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
