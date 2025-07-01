@@ -30,6 +30,7 @@ class LiveDecodePageState extends State<LiveDecodePage> {
   Result? currentResult;
   final QRCodeDartScanController _controller = QRCodeDartScanController();
   bool _isFlashOn = false; // Variable para rastrear el estado del flash
+  bool _isNavigating = false;
 
   @override
   void initState() {
@@ -46,124 +47,138 @@ class LiveDecodePageState extends State<LiveDecodePage> {
     print("print: " + userData.phone);
 
     return Scaffold(
-      body: QRCodeDartScanView(
-        controller: _controller,
-        scanInvertedQRCode: true,
-        resolutionPreset: QRCodeDartScanResolutionPreset.high,
-        onCapture: (Result result) async {
-          await _controller.stopScan();
-          final numberQr = result.text.replaceFirst("+51", "");
-          print("print: numberQr: $numberQr");
-          print("print: userData.phone: ${userData.phone}");
-          if (RegExp(r'^\d+$').hasMatch(numberQr)) {
-            UserModel? userEnv = await fs.getUserByNumber(numberQr);
-            if (userEnv != null) {
-              Navigator.pushNamed(
-                context,
-                "/yapear",
-                arguments: DatayapearModel(
-                  moneyCurrent: userData.money,
-                  nameUserEmitter: userData.fullName,
-                  nameUserRecept: userEnv.fullName,
-                  numberPhoneEmitter: userEnv.phone,
-                  numberPhoneRecept: userEnv.phone,
+      backgroundColor: Color.fromARGB(255, 115, 9, 144),
+      body: SafeArea(
+        child: Container(
+          color: Colors.white,
+          child: QRCodeDartScanView(
+            controller: _controller,
+            scanInvertedQRCode: true,
+            resolutionPreset: QRCodeDartScanResolutionPreset.high,
+            onCapture: (Result result) async {
+              if (_isNavigating) return;
+
+              await _controller.stopScan();
+              final numberQr = result.text.replaceFirst("+51", "");
+              print("print: numberQr: $numberQr");
+              print("print: userData.phone: ${userData.phone}");
+              if (RegExp(r'^\d+$').hasMatch(numberQr)) {
+                UserModel? userEnv = await fs.getUserByNumber(numberQr);
+
+                if (!mounted) return;
+                if (userEnv != null) {
+                  _isNavigating = true;
+                  await Navigator.pushNamed(
+                    context,
+                    "/yapear",
+                    arguments: DatayapearModel(
+                      moneyCurrent: userData.money,
+                      nameUserEmitter: userData.fullName,
+                      nameUserRecept: userEnv.fullName,
+                      numberPhoneEmitter: userData.phone,
+                      numberPhoneRecept: userEnv.phone,
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("El usuario no tiene Yape."),
+                      duration: Duration(seconds: 1),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              }
+              if (!mounted) return;
+              setState(() {
+                currentResult = result;
+              });
+              await _controller.startScan();
+              _isNavigating = false;
+            },
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                margin: const EdgeInsets.all(0),
+                padding: const EdgeInsets.all(0),
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(20),
                 ),
-              );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text("El usuario no tiene Yape."),
-                  duration: Duration(seconds: 1),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            }
-          }
-          print("addmer");
-          setState(() {
-            currentResult = result;
-            print(result);
-          });
-          await _controller.startScan();
-        },
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            margin: const EdgeInsets.all(0),
-            padding: const EdgeInsets.all(0),
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              width: double.infinity,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Column(
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  width: double.infinity,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await _controller
-                                .toggleFlash(); // Activar/desactivar flash
-                            setState(() {
-                              _isFlashOn = !_isFlashOn; // Cambiar el estado
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                _isFlashOn ? Colors.blue : Colors.white60,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: Text(
-                            _isFlashOn
-                                ? 'Apagar linterna'
-                                : 'Encender linterna',
-                            style: TextStyle(color: Colors.white, fontSize: 15),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        height: 65,
-                        width: double.infinity,
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            // await controller?.toggleFlash();
-                            setState(() {});
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Iconify(
-                                Gridicons.add_image,
-                                color: Colors.purpleAccent,
+                      Column(
+                        children: <Widget>[
+                          Container(
+                            margin: const EdgeInsets.all(8),
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                await _controller
+                                    .toggleFlash(); // Activar/desactivar flash
+                                setState(() {
+                                  _isFlashOn = !_isFlashOn; // Cambiar el estado
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    _isFlashOn ? Colors.blue : Colors.white60,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                               ),
-                              SizedBox(width: 10),
-                              Text(
-                                'Subir una imagen con QR',
+                              child: Text(
+                                _isFlashOn
+                                    ? 'Apagar linterna'
+                                    : 'Encender linterna',
                                 style: TextStyle(
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   fontSize: 15,
                                 ),
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                          Container(
+                            height: 65,
+                            width: double.infinity,
+                            margin: const EdgeInsets.all(8),
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                // await controller?.toggleFlash();
+                                setState(() {});
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Iconify(
+                                    Gridicons.add_image,
+                                    color: Colors.purpleAccent,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    'Subir una imagen con QR',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
