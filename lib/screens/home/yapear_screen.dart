@@ -5,6 +5,7 @@ import 'package:iconify_flutter/icons/material_symbols.dart';
 import 'package:iconify_flutter/icons/ph.dart';
 import 'package:yapeclon/data/models/contact_user.dart';
 import 'package:yapeclon/data/models/transaction_model.dart';
+import 'package:yapeclon/data/models/useinscreen/datadetails_model.dart';
 import 'package:yapeclon/data/models/user_model.dart';
 import 'package:yapeclon/widgets/buttons/button_main_widget.dart';
 
@@ -17,6 +18,7 @@ class YapearScreen extends StatefulWidget {
 
 class _YapearScreenState extends State<YapearScreen> {
   final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
   bool isYapearEnabled = false;
   double userMoney = 0;
 
@@ -163,6 +165,7 @@ class _YapearScreenState extends State<YapearScreen> {
                           .center, // Centra el hintText y el texto ingresado
                   keyboardType: TextInputType.text,
                   style: TextStyle(fontSize: 20),
+                  controller: _descriptionController,
                   decoration: InputDecoration(
                     isDense: true,
                     contentPadding: EdgeInsets.zero,
@@ -244,7 +247,12 @@ class _YapearScreenState extends State<YapearScreen> {
                                   date: date,
                                   description:
                                       "Yape a ${contactUsers.contact.displayName}",
+                                  descriptionTransaction:
+                                      (_descriptionController.text.isNotEmpty)
+                                          ? _descriptionController.text.trim()
+                                          : null,
                                   destinationPhone: contactUsers.user.phone,
+                                  status: 'pending', // Estado inicial
                                 );
 
                                 final newTransactionRecept = TransactionModel(
@@ -252,8 +260,10 @@ class _YapearScreenState extends State<YapearScreen> {
                                   amount: monto,
                                   date: date,
                                   description:
-                                      "Te ha yapeado ${contactUsers.user.fullName}",
+                                      "Te ha yapeado " +
+                                      contactUsers.user.fullName,
                                   destinationPhone: contactUsers.user.phone,
+                                  status: 'pending', // Estado inicial
                                 );
 
                                 final updatedUser = UserModel(
@@ -308,11 +318,13 @@ class _YapearScreenState extends State<YapearScreen> {
                                   Navigator.pushNamed(
                                     context,
                                     "/view-yapear",
-                                    arguments: ContactUserArgs(
-                                      contact: contactUsers.contact,
-                                      user: contactUsers.user,
-                                      userRecept: contactUsers.userRecept,
-                                      cantidad: monto,
+                                    arguments: DatadetailsModel(
+                                      nameUser:
+                                          contactUsers.userRecept.fullName,
+                                      phone: contactUsers.userRecept.phone,
+                                      codeSecurity: "162",
+                                      operation: "121213211",
+                                      ammount: monto,
                                       date: date,
                                     ),
                                   );

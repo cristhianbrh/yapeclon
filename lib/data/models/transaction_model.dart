@@ -3,7 +3,9 @@ class TransactionModel {
   final double amount;
   final DateTime date;
   final String description;
+  final String? descriptionTransaction;
   final String destinationPhone;
+  final String status;
 
   TransactionModel({
     required this.id,
@@ -11,7 +13,9 @@ class TransactionModel {
     required this.date,
     required this.description,
     required this.destinationPhone,
-  });
+    this.descriptionTransaction,
+    String? status,
+  }) : status = status ?? 'pending';
 
   Map<String, dynamic> toMap() => {
     'id': id,
@@ -19,6 +23,8 @@ class TransactionModel {
     'date': date.toIso8601String(),
     'description': description,
     'destinationPhone': destinationPhone,
+    'descriptionTransaction': descriptionTransaction,
+    'status': status,
   };
 
   factory TransactionModel.fromMap(Map<String, dynamic> map) =>
@@ -28,5 +34,7 @@ class TransactionModel {
         date: DateTime.parse(map['date']),
         description: map['description'] ?? '',
         destinationPhone: map['destinationPhone'] ?? '',
+        descriptionTransaction: map['descriptionTransaction'],
+        status: map['status'] ?? 'pending',
       );
 }
