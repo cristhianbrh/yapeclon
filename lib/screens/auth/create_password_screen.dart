@@ -4,6 +4,8 @@ import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:yapeclon/data/models/user_model.dart';
 import 'package:yapeclon/data/services/firestore_service.dart';
 import 'package:yapeclon/layouts/layout_main.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
 
 class CreatePasswordScreen extends StatefulWidget {
   @override
@@ -12,13 +14,27 @@ class CreatePasswordScreen extends StatefulWidget {
 
 class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
   String password = "";
+  String? firstPassword;
+  bool isConfirming = false;
+  String? errorMessage;
   List<int> numeros = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
   bool isProcessing = false;
 
   @override
   void initState() {
     super.initState();
-    numeros.shuffle(); // Ahora sí es válido
+    numeros.shuffle();
+  }
+
+  void _resetAll() {
+    setState(() {
+      password = "";
+      firstPassword = null;
+      isConfirming = false;
+      errorMessage = null;
+      numeros.shuffle();
+      isProcessing = false;
+    });
   }
 
   @override
@@ -50,58 +66,59 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
         label: '${numeros[index < 9 ? index : 9]}',
         onPressed: () async {
           if (password.length < 6 && !isProcessing) {
-            // Agregar número al password y luego evaluar
             String nuevoPassword =
                 password + numeros[index < 9 ? index : 9].toString();
-
             setState(() {
               password = nuevoPassword;
             });
-
             if (nuevoPassword.length == 6) {
-              setState(() {
-                isProcessing = true;
-              });
-              FirestoreService fs = FirestoreService();
-              final existingUser = await fs.getUserByNumber(userData.phone);
-              if (existingUser != null) {
-                print("Usuario ya existe");
+              if (!isConfirming) {
+                // Primer ingreso
                 setState(() {
-                  isProcessing = false;
+                  firstPassword = nuevoPassword;
+                  password = "";
+                  isConfirming = true;
+                  errorMessage = null;
                 });
-                return;
+              } else {
+                // Confirmación
+                if (nuevoPassword == firstPassword) {
+                  setState(() {
+                    isProcessing = true;
+                  });
+                  FirestoreService fs = FirestoreService();
+                  final userData =
+                      ModalRoute.of(context)!.settings.arguments as UserModel;
+                  final existingUser = await fs.getUserByNumber(userData.phone);
+                  if (existingUser != null) {
+                    setState(() {
+                      isProcessing = false;
+                    });
+                    return;
+                  }
+                  UserModel newUser = UserModel(
+                    typeDoc: userData.typeDoc,
+                    document: userData.document,
+                    email: userData.email,
+                    phone: userData.phone,
+                    password: hashPassword(nuevoPassword),
+                    fullName: userData.fullName,
+                  );
+                  await fs.addUser(newUser);
+                  Navigator.pushNamed(context, "/house", arguments: newUser);
+                  Future.delayed(Duration(milliseconds: 100), () {
+                    _resetAll();
+                  });
+                } else {
+                  setState(() {
+                    errorMessage = "Las claves no coinciden. Intenta de nuevo.";
+                  });
+                  Future.delayed(Duration(milliseconds: 800), () {
+                    _resetAll();
+                  });
+                }
               }
-
-              // Si es correcto, navegar y resetear después
-              UserModel newUser = UserModel(
-                typeDoc: userData.typeDoc,
-                document: userData.document,
-                email: userData.email,
-                phone: userData.phone,
-                password: nuevoPassword,
-                fullName: userData.fullName,
-              );
-              await fs.addUser(newUser);
-
-              Navigator.pushNamed(context, "/house", arguments: newUser);
-              Future.delayed(Duration(milliseconds: 100), () {
-                setState(() {
-                  password = "";
-                  numeros.shuffle();
-                  isProcessing = false;
-                });
-              });
-            } else if (nuevoPassword.length >= 6) {
-              // Si no es correcto pero ya hay 6 dígitos, reiniciar
-              Future.delayed(Duration(milliseconds: 100), () {
-                setState(() {
-                  password = "";
-                  numeros.shuffle();
-                });
-              });
             }
-
-            print(nuevoPassword);
           }
         },
       );
@@ -175,9 +192,16 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
               children: [
                 Center(
                   child:
-                      password.length == 0
+                      errorMessage != null
                           ? Text(
-                            "Ingresa tu clave",
+                            errorMessage!,
+                            style: TextStyle(color: Colors.red, fontSize: 16),
+                          )
+                          : password.length == 0
+                          ? Text(
+                            isConfirming
+                                ? "Repite tu clave"
+                                : "Ingresa tu clave",
                             style: TextStyle(
                               color: const Color.fromARGB(255, 180, 164, 183),
                               fontSize: 20,
@@ -252,4 +276,11 @@ Widget _buildIndicatorPasswordLength(String password) {
         )),
     ],
   );
+}
+
+String hashPassword(String password) {
+  // Usando SHA-256 para hashear la contraseña
+  final bytes = utf8.encode(password);
+  final digest = sha256.convert(bytes);
+  return digest.toString();
 }

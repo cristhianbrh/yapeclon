@@ -6,7 +6,8 @@ class FirestoreService {
   final _db = FirebaseFirestore.instance;
 
   Future<void> addUser(UserModel user) async {
-    await _db.collection("users").add(user.toMap());
+    // Usar el número de teléfono como ID único del documento
+    await _db.collection("users").doc(user.phone).set(user.toMap());
   }
 
   Future<List<UserModel>> getUsers() async {
@@ -28,40 +29,38 @@ class FirestoreService {
 
   Future<UserModel?> getUserByEmailAndPassword(
     String email,
-    String password,
-  ) async {
+    String password, {
+    bool isHashed = false,
+  }) async {
+    final String passwordToUse = isHashed ? password : hashPassword(password);
     final snapshot =
         await _db
             .collection("users")
             .where("email", isEqualTo: email)
-            .where("password", isEqualTo: password)
+            .where("password", isEqualTo: passwordToUse)
             .get();
-
     if (snapshot.docs.isNotEmpty) {
-      // Usuario encontrado
       return UserModel.fromMap(snapshot.docs.first.data());
     } else {
-      // No encontrado
       return null;
     }
   }
 
   Future<UserModel?> getUserByPhoneAndPassword(
     String phone,
-    String password,
-  ) async {
+    String password, {
+    bool isHashed = false,
+  }) async {
+    final String passwordToUse = isHashed ? password : hashPassword(password);
     final snapshot =
         await _db
             .collection("users")
             .where("phone", isEqualTo: phone)
-            .where("password", isEqualTo: password)
+            .where("password", isEqualTo: passwordToUse)
             .get();
-
     if (snapshot.docs.isNotEmpty) {
-      // Usuario encontrado
       return UserModel.fromMap(snapshot.docs.first.data());
     } else {
-      // No encontrado
       return null;
     }
   }

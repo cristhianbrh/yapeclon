@@ -1,15 +1,13 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/contact.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
-import 'package:iconify_flutter/icons/icon_park_outline.dart';
-import 'package:iconify_flutter/icons/icon_park_solid.dart';
 import 'package:iconify_flutter/icons/material_symbols.dart';
-import 'package:iconify_flutter/icons/mingcute.dart';
 import 'package:iconify_flutter/icons/ph.dart';
-import 'package:yapeclon/data/models/contact_user.dart';
 import 'package:yapeclon/data/models/transaction_model.dart';
-import 'package:yapeclon/data/models/user_model.dart';
+import 'package:yapeclon/data/models/useinscreen/datadetails_model.dart';
+import 'package:yapeclon/data/models/useinscreen/datayapear_model.dart';
 import 'package:yapeclon/widgets/buttons/button_main_widget.dart';
 
 class YapearScreen extends StatefulWidget {
@@ -21,12 +19,44 @@ class YapearScreen extends StatefulWidget {
 
 class _YapearScreenState extends State<YapearScreen> {
   final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  bool isYapearEnabled = false;
+  // double userMoney = 0;
+  late DatayapearModel datayapearModel;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    datayapearModel =
+        ModalRoute.of(context)!.settings.arguments as DatayapearModel;
+    // userMoney = contactUsers.user.money;
+    _amountController.addListener(_validateYapearButton);
+  }
+
+  void _validateYapearButton() {
+    final montoText = _amountController.text.trim();
+    final monto = double.tryParse(montoText);
+    final isSameUser =
+        datayapearModel.numberPhoneEmitter.replaceFirst("+51", "") ==
+        datayapearModel.numberPhoneRecept.replaceFirst("+51", "");
+    setState(() {
+      isYapearEnabled =
+          monto != null &&
+          monto > 0 &&
+          monto <= datayapearModel.moneyCurrent &&
+          !isSameUser;
+    });
+  }
+
+  @override
+  void dispose() {
+    _amountController.removeListener(_validateYapearButton);
+    _amountController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final contactUsers =
-        ModalRoute.of(context)!.settings.arguments as ContactUserArgs;
-
     return Scaffold(
       backgroundColor: Colors.purpleAccent,
       // appBar: AppBar(title: Text('Inicio')),
@@ -51,7 +81,7 @@ class _YapearScreenState extends State<YapearScreen> {
               //CODIFICA AQUÍ
               _topHeader(context),
               Text(
-                contactUsers.contact.displayName,
+                datayapearModel.nameUserRecept,
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 20,
@@ -135,6 +165,7 @@ class _YapearScreenState extends State<YapearScreen> {
                           .center, // Centra el hintText y el texto ingresado
                   keyboardType: TextInputType.text,
                   style: TextStyle(fontSize: 20),
+                  controller: _descriptionController,
                   decoration: InputDecoration(
                     isDense: true,
                     contentPadding: EdgeInsets.zero,
@@ -173,114 +204,144 @@ class _YapearScreenState extends State<YapearScreen> {
                     child: ButtonMainWidget(
                       text: 'YAPEAR',
                       fontSize: 14,
-                      color: Color.fromARGB(176, 67, 68, 67),
-                      backgroundColor: Color.fromARGB(255, 216, 210, 210),
-                      onPressed: () async {
-                        final montoText = _amountController.text.trim();
-                        final monto = double.tryParse(montoText);
+                      color:
+                          isYapearEnabled
+                              ? Colors.white
+                              : Color.fromARGB(176, 67, 68, 67),
+                      backgroundColor:
+                          isYapearEnabled
+                              ? Color(0xFF0FCBB3)
+                              : Color.fromARGB(255, 216, 210, 210),
+                      isDisabled: !isYapearEnabled,
+                      onPressed:
+                          isYapearEnabled
+                              ? () async {
+                                final montoText = _amountController.text.trim();
+                                final monto = double.tryParse(montoText);
 
-                        if (monto == null || monto <= 0) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Ingresa un monto válido")),
-                          );
-                          return;
-                        }
+                                if (monto == null || monto <= 0) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text("Ingresa un monto válido"),
+                                    ),
+                                  );
+                                  return;
+                                }
 
-                        if (monto > contactUsers.user.money) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Saldo insuficiente")),
-                          );
-                          return;
-                        }
+                                if (monto > datayapearModel.moneyCurrent) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text("Saldo insuficiente"),
+                                    ),
+                                  );
+                                  return;
+                                }
 
-                        final date = DateTime.now();
-                        final datecurrent =
-                            date.millisecondsSinceEpoch.toString();
+                                final date = DateTime.now();
+                                final datecurrent =
+                                    date.millisecondsSinceEpoch.toString();
+                                final String code = codeGenerator();
+                                final newTransactionEmitter = TransactionModel(
+                                  id: datecurrent,
+                                  amount: -monto,
+                                  date: date,
+                                  description:
+                                      "Yape a ${datayapearModel.nameUserRecept}",
+                                  descriptionTransaction:
+                                      (_descriptionController.text.isNotEmpty)
+                                          ? _descriptionController.text.trim()
+                                          : null,
+                                  destinationPhone:
+                                      datayapearModel.numberPhoneRecept,
+                                  status: 'pending', // Estado inicial
+                                  codeSecurity: code,
+                                );
 
-                        final newTransaction = TransactionModel(
-                          id: datecurrent,
-                          amount: -monto,
-                          date: date,
-                          description:
-                              "Yape a ${contactUsers.contact.displayName}",
-                          destinationPhone: contactUsers.user.phone,
-                        );
+                                final newTransactionRecept = TransactionModel(
+                                  id: datecurrent,
+                                  amount: monto,
+                                  date: date,
+                                  description:
+                                      "Te ha yapeado " +
+                                      datayapearModel.nameUserEmitter,
+                                  descriptionTransaction:
+                                      (_descriptionController.text.isNotEmpty)
+                                          ? _descriptionController.text.trim()
+                                          : null,
+                                  destinationPhone:
+                                      datayapearModel.numberPhoneEmitter,
+                                  status: 'pending', // Estado inicial
+                                  codeSecurity: code,
+                                );
 
-                        final newTransactionRecept = TransactionModel(
-                          id: datecurrent,
-                          amount: monto,
-                          date: date,
-                          description:
-                              "Te ha yapeado ${contactUsers.user.fullName}",
-                          destinationPhone: contactUsers.user.phone,
-                        );
+                                final userEmitterRef = FirebaseFirestore
+                                    .instance
+                                    .collection('users')
+                                    .doc(datayapearModel.numberPhoneEmitter);
+                                final userReceptRef = FirebaseFirestore.instance
+                                    .collection('users')
+                                    .doc(datayapearModel.numberPhoneRecept);
 
-                        final updatedUser = UserModel(
-                          phone: contactUsers.user.phone,
-                          typeDoc: contactUsers.user.typeDoc,
-                          document: contactUsers.user.document,
-                          email: contactUsers.user.email,
-                          password: contactUsers.user.password,
-                          fullName: contactUsers.user.fullName,
-                          money: contactUsers.user.money - monto,
-                          transactions: [
-                            ...contactUsers.user.transactions,
-                            newTransaction,
-                          ],
-                        );
-                        final updatedUserRecept = UserModel(
-                          phone: contactUsers.userRecept.phone,
-                          typeDoc: contactUsers.userRecept.typeDoc,
-                          document: contactUsers.userRecept.document,
-                          email: contactUsers.userRecept.email,
-                          password: contactUsers.userRecept.password,
-                          fullName: contactUsers.userRecept.fullName,
-                          money: contactUsers.userRecept.money + monto,
-                          transactions: [
-                            ...contactUsers.userRecept.transactions,
-                            newTransactionRecept,
-                          ],
-                        );
+                                // GUARDAR EN FIRESTORE
+                                try {
+                                  await userEmitterRef.update({
+                                    'money': FieldValue.increment(-monto),
+                                    'transactions': FieldValue.arrayUnion([
+                                      newTransactionEmitter.toMap(),
+                                    ]),
+                                  });
+                                  await userReceptRef.update({
+                                    'money': FieldValue.increment(monto),
+                                    'transactions': FieldValue.arrayUnion([
+                                      newTransactionRecept.toMap(),
+                                    ]),
+                                  });
 
-                        // GUARDAR EN FIRESTORE
-                        try {
-                          await FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(contactUsers.user.phone)
-                              .set(updatedUser.toMap());
+                                  // Navigator.pop(
+                                  //   context,
+                                  // ); // Regresa a la pantalla anterior
 
-                          await FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(contactUsers.userRecept.phone)
-                              .set(updatedUserRecept.toMap());
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text("Yape realizado con éxito"),
+                                    ),
+                                  );
 
-                          // Navigator.pop(
-                          //   context,
-                          // ); // Regresa a la pantalla anterior
+                                  Navigator.pushNamed(
+                                    context,
+                                    "/view-yapear",
+                                    arguments: {
+                                      "dataDetails": DatadetailsModel(
+                                        nameUser:
+                                            datayapearModel.nameUserEmitter,
+                                        phone:
+                                            datayapearModel.numberPhoneRecept,
+                                        codeSecurity: code,
+                                        operation: "18945451",
+                                        ammount: monto,
+                                        description:
+                                            (_descriptionController
+                                                    .text
+                                                    .isNotEmpty)
+                                                ? _descriptionController.text
+                                                    .trim()
+                                                : null,
+                                        date: date,
+                                      ),
+                                      "ammountPreviousRoute": 3,
+                                    },
+                                  );
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text("Error al yapear: $e"),
+                                    ),
+                                  );
+                                }
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Yape realizado con éxito")),
-                          );
-
-                          Navigator.pushNamed(
-                            context,
-                            "/view-yapear",
-                            arguments: ContactUserArgs(
-                              contact: contactUsers.contact,
-                              user: contactUsers.user,
-                              userRecept: contactUsers.userRecept,
-                              cantidad: monto,
-                              date: date,
-                            ),
-                          );
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Error al yapear: $e")),
-                          );
-                        }
-
-                        // Navigator.pop(context);
-                      },
+                                // Navigator.pop(context);
+                              }
+                              : () {},
                     ),
                   ),
                 ],
@@ -291,6 +352,15 @@ class _YapearScreenState extends State<YapearScreen> {
         ),
       ),
     );
+  }
+
+  String codeGenerator() {
+    final random = Random();
+    // número entre 0 y 9
+    int num1 = random.nextInt(10);
+    int num2 = random.nextInt(10);
+    int num3 = random.nextInt(10);
+    return "$num1$num2$num3";
   }
 
   Widget _topHeader(BuildContext context) {

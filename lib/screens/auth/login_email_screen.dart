@@ -15,11 +15,26 @@ class _LoginEmailScreenState extends State<LoginEmailScreen> {
   String password = "";
   List<int> numeros = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
   final TextEditingController _emailDocController = TextEditingController();
+  bool isInputValid = false;
 
   @override
   void initState() {
     super.initState();
     numeros.shuffle(); // Ahora sí es válido
+    _emailDocController.addListener(_onInputChanged);
+  }
+
+  void _onInputChanged() {
+    setState(() {
+      isInputValid = _emailDocController.text.trim().isNotEmpty;
+    });
+  }
+
+  @override
+  void dispose() {
+    _emailDocController.removeListener(_onInputChanged);
+    _emailDocController.dispose();
+    super.dispose();
   }
 
   @override
@@ -143,16 +158,21 @@ class _LoginEmailScreenState extends State<LoginEmailScreen> {
                         width: double.infinity,
                         child: ButtonMainWidget(
                           text: "Continuar",
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              "/login",
-                              arguments: _emailDocController.text,
-                            );
-                          },
+                          onPressed:
+                              isInputValid
+                                  ? () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      "/login",
+                                      arguments: _emailDocController.text,
+                                    );
+                                  }
+                                  : () {},
+                          isDisabled: !isInputValid,
+                          backgroundColor:
+                              isInputValid ? Color(0xFF0FCBB3) : Colors.black12,
+                          color: isInputValid ? Colors.white : Colors.black38,
                           borderSide: BorderSide.none,
-                          backgroundColor: Colors.black12,
-                          color: Colors.black38,
                           elevation: 0,
                         ),
                       ),
