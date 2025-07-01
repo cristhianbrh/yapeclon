@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:yapeclon/data/models/contact_user.dart';
+import 'package:yapeclon/data/models/useinscreen/datayapear_model.dart';
 import 'package:yapeclon/data/models/user_model.dart';
 import 'package:yapeclon/data/services/firestore_service.dart';
 
@@ -56,12 +56,12 @@ class ContactViewWidget extends StatelessWidget {
                   Navigator.pushNamed(
                     contextParent,
                     "/yapear",
-                    arguments: ContactUserArgs(
-                      contact: contact,
-                      user: user,
-                      userRecept: userEnv,
-                      cantidad: null,
-                      date: null,
+                    arguments: DatayapearModel(
+                      moneyCurrent: user.money,
+                      nameUserEmitter: user.fullName,
+                      nameUserRecept: contact.displayName,
+                      numberPhoneEmitter: user.phone,
+                      numberPhoneRecept: userEnv.phone,
                     ),
                   );
                 } else {

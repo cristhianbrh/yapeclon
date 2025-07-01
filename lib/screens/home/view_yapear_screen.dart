@@ -146,7 +146,7 @@ class _ViewYapearScreenState extends State<ViewYapearScreen> {
                             ),
                             Text(
                               // dataDetails.descriptionTransaction ??
-                              "Yape a ${dataDetails.description}",
+                              "${dataDetails.description}",
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.black87,
