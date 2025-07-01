@@ -1,12 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
-import 'package:iconify_flutter/icons/teenyicons.dart';
 import 'package:yapeclon/data/models/user_model.dart';
 import 'package:yapeclon/data/services/firestore_service.dart';
 import 'package:yapeclon/layouts/layout_main.dart';
+import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -74,7 +72,11 @@ class _LoginScreenState extends State<LoginScreen> {
             // if (nuevoPassword == "123456") {
             if (userCurrent != null) {
               // Si es correcto, navegar y resetear después
-              Navigator.pushNamed(context, "/house", arguments: userCurrent);
+              await Navigator.pushNamed(
+                context,
+                "/house",
+                arguments: userCurrent,
+              );
               Future.delayed(Duration(milliseconds: 100), () {
                 setState(() {
                   password = "";
@@ -119,7 +121,29 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(10),
                           color: Colors.white,
                         ),
-                        child: Image.asset("assets/images/QR/IMG_LOGIN_QR.jpg"),
+                        child: PrettyQrView.data(
+                          data: emailOrPhone,
+                          errorCorrectLevel: 2,
+                          decoration: const PrettyQrDecoration(
+                            quietZone: PrettyQrPixelsQuietZone(2),
+                            shape: PrettyQrSmoothSymbol(
+                              color: Color.fromARGB(255, 96, 11, 114),
+                              roundFactor: 0,
+                            ),
+                            image: PrettyQrDecorationImage(
+                              position:
+                                  PrettyQrDecorationImagePosition.foreground,
+                              scale: 0.4,
+                              fit: BoxFit.contain,
+                              opacity: 1,
+                              colorFilter: null,
+                              filterQuality: FilterQuality.high,
+                              image: AssetImage(
+                                "assets/images/icons/logo-yape-cerb.png",
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
