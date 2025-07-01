@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
-import 'package:flutter_contacts/properties/phone.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/gridicons.dart';
 import 'package:qr_code_dart_scan/qr_code_dart_scan.dart';
-import 'package:yapeclon/data/models/contact_user.dart';
 import 'package:yapeclon/data/models/user_model.dart';
 import 'package:yapeclon/data/services/firestore_service.dart';
+import 'package:yapeclon/data/models/useinscreen/datayapear_model.dart';
 
 ///
 /// Created by
@@ -56,18 +55,26 @@ class LiveDecodePageState extends State<LiveDecodePage> {
           final numberQr = result.text.replaceFirst("+51", "");
           print("print: numberQr: $numberQr");
           print("print: userData.phone: ${userData.phone}");
-          if (numberQr != userData.phone) {
+          if (RegExp(r'^\d+$').hasMatch(numberQr)) {
             UserModel? userEnv = await fs.getUserByNumber(numberQr);
             if (userEnv != null) {
               Navigator.pushNamed(
                 context,
                 "/yapear",
-                arguments: ContactUserArgs(
-                  contact: Contact(displayName: userEnv.fullName),
-                  user: userData,
-                  userRecept: userEnv,
-                  cantidad: null,
-                  date: null,
+                arguments: DatayapearModel(
+                  moneyCurrent: userData.money,
+                  nameUserEmitter: userData.fullName,
+                  nameUserRecept: userEnv.fullName,
+                  numberPhoneEmitter: userEnv.phone,
+                  numberPhoneRecept: userEnv.phone,
+                ),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("El usuario no tiene Yape."),
+                  duration: Duration(seconds: 1),
+                  behavior: SnackBarBehavior.floating,
                 ),
               );
             }

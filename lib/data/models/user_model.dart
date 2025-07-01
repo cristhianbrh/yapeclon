@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:yapeclon/data/models/transaction_model.dart';
 
 class UserModel {
@@ -5,6 +7,7 @@ class UserModel {
   final String typeDoc;
   final String document;
   final String email;
+  // La contraseña se almacena como hash
   final String password;
   final String fullName;
   final double money;
@@ -54,4 +57,9 @@ class UserModel {
       transactions: transactionsList,
     );
   }
+}
+
+/// Función para hashear la contraseña
+String hashPassword(String password) {
+  return sha256.convert(utf8.encode(password)).toString();
 }
