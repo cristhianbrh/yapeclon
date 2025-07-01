@@ -6,6 +6,7 @@ class TransactionModel {
   final String? descriptionTransaction;
   final String destinationPhone;
   final String status;
+  final String codeSecurity;
 
   TransactionModel({
     required this.id,
@@ -13,6 +14,7 @@ class TransactionModel {
     required this.date,
     required this.description,
     required this.destinationPhone,
+    required this.codeSecurity,
     this.descriptionTransaction,
     String? status,
   }) : status = status ?? 'pending';
@@ -24,6 +26,7 @@ class TransactionModel {
     'description': description,
     'destinationPhone': destinationPhone,
     'descriptionTransaction': descriptionTransaction,
+    'codeSecurity': codeSecurity,
     'status': status,
   };
 
@@ -35,6 +38,7 @@ class TransactionModel {
         description: map['description'] ?? '',
         destinationPhone: map['destinationPhone'] ?? '',
         descriptionTransaction: map['descriptionTransaction'],
+        codeSecurity: map['codeSecurity'],
         status: map['status'] ?? 'pending',
       );
 }

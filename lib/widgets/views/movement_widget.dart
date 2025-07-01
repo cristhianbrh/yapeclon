@@ -17,10 +17,11 @@ class MovementWidget extends StatelessWidget {
               "/view-yapear",
               arguments: {
                 "dataDetails": DatadetailsModel(
-                  nameUser: tx.destinationPhone,
+                  nameUser: tx.description,
+                  description: tx.descriptionTransaction,
                   phone: tx.destinationPhone,
-                  codeSecurity: tx.destinationPhone,
-                  operation: tx.destinationPhone,
+                  codeSecurity: tx.codeSecurity,
+                  operation: tx.id,
                   ammount: tx.amount,
                   date: tx.date,
                 ),

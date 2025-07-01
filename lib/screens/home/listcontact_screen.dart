@@ -49,6 +49,7 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
           await FlutterContacts.deleteContact(contact);
         }
       }
+      if (!mounted) return;
       setState(() {
         _contacts = contacts.values.toList();
         _filteredContacts = _contacts;

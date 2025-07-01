@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
@@ -240,7 +242,7 @@ class _YapearScreenState extends State<YapearScreen> {
                                 final date = DateTime.now();
                                 final datecurrent =
                                     date.millisecondsSinceEpoch.toString();
-
+                                final String code = codeGenerator();
                                 final newTransaction = TransactionModel(
                                   id: datecurrent,
                                   amount: -monto,
@@ -253,6 +255,7 @@ class _YapearScreenState extends State<YapearScreen> {
                                           : null,
                                   destinationPhone: contactUsers.user.phone,
                                   status: 'pending', // Estado inicial
+                                  codeSecurity: code,
                                 );
 
                                 final newTransactionRecept = TransactionModel(
@@ -262,8 +265,13 @@ class _YapearScreenState extends State<YapearScreen> {
                                   description:
                                       "Te ha yapeado " +
                                       contactUsers.user.fullName,
+                                  descriptionTransaction:
+                                      (_descriptionController.text.isNotEmpty)
+                                          ? _descriptionController.text.trim()
+                                          : null,
                                   destinationPhone: contactUsers.user.phone,
                                   status: 'pending', // Estado inicial
+                                  codeSecurity: code,
                                 );
 
                                 final updatedUser = UserModel(
@@ -323,9 +331,16 @@ class _YapearScreenState extends State<YapearScreen> {
                                         nameUser:
                                             contactUsers.userRecept.fullName,
                                         phone: contactUsers.userRecept.phone,
-                                        codeSecurity: "162",
-                                        operation: "121213211",
+                                        codeSecurity: code,
+                                        operation: "18945451",
                                         ammount: monto,
+                                        description:
+                                            (_descriptionController
+                                                    .text
+                                                    .isNotEmpty)
+                                                ? _descriptionController.text
+                                                    .trim()
+                                                : null,
                                         date: date,
                                       ),
                                       "ammountPreviousRoute": 3,
@@ -352,6 +367,15 @@ class _YapearScreenState extends State<YapearScreen> {
         ),
       ),
     );
+  }
+
+  String codeGenerator() {
+    final random = Random();
+    // número entre 0 y 9
+    int num1 = random.nextInt(10);
+    int num2 = random.nextInt(10);
+    int num3 = random.nextInt(10);
+    return "$num1$num2$num3";
   }
 
   Widget _topHeader(BuildContext context) {
