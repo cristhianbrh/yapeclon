@@ -30,6 +30,7 @@ class LiveDecodePageState extends State<LiveDecodePage> {
   Result? currentResult;
   final QRCodeDartScanController _controller = QRCodeDartScanController();
   bool _isFlashOn = false; // Variable para rastrear el estado del flash
+  bool _isNavigating = false;
 
   @override
   void initState() {
@@ -51,21 +52,26 @@ class LiveDecodePageState extends State<LiveDecodePage> {
         scanInvertedQRCode: true,
         resolutionPreset: QRCodeDartScanResolutionPreset.high,
         onCapture: (Result result) async {
+          if (_isNavigating) return;
+
           await _controller.stopScan();
           final numberQr = result.text.replaceFirst("+51", "");
           print("print: numberQr: $numberQr");
           print("print: userData.phone: ${userData.phone}");
           if (RegExp(r'^\d+$').hasMatch(numberQr)) {
             UserModel? userEnv = await fs.getUserByNumber(numberQr);
+
+            if (!mounted) return;
             if (userEnv != null) {
-              Navigator.pushNamed(
+              _isNavigating = true;
+              await Navigator.pushNamed(
                 context,
                 "/yapear",
                 arguments: DatayapearModel(
                   moneyCurrent: userData.money,
                   nameUserEmitter: userData.fullName,
                   nameUserRecept: userEnv.fullName,
-                  numberPhoneEmitter: userEnv.phone,
+                  numberPhoneEmitter: userData.phone,
                   numberPhoneRecept: userEnv.phone,
                 ),
               );
@@ -79,12 +85,12 @@ class LiveDecodePageState extends State<LiveDecodePage> {
               );
             }
           }
-          print("addmer");
+          if (!mounted) return;
           setState(() {
             currentResult = result;
-            print(result);
           });
           await _controller.startScan();
+          _isNavigating = false;
         },
         child: Align(
           alignment: Alignment.bottomCenter,

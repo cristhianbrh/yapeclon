@@ -320,8 +320,8 @@ class _YapearScreenState extends State<YapearScreen> {
                                         operation: "18945451",
                                         ammount: monto,
                                         description:
-                                            (_descriptionController
-                                                    .text
+                                            (_descriptionController.text
+                                                    .trim()
                                                     .isNotEmpty)
                                                 ? _descriptionController.text
                                                     .trim()
