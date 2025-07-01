@@ -13,10 +13,23 @@ class ViewYapearScreen extends StatefulWidget {
 }
 
 class _ViewYapearScreenState extends State<ViewYapearScreen> {
+  bool _isInit = false;
+  late DatadetailsModel dataDetails;
+  int ammountPreviousRoute = 3;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInit) {
+      final args = ModalRoute.of(context)!.settings.arguments as Map;
+      dataDetails = args['dataDetails'] as DatadetailsModel;
+      ammountPreviousRoute = args['ammountPreviousRoute'] as int;
+      _isInit = true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final dataDetails =
-        ModalRoute.of(context)!.settings.arguments as DatadetailsModel;
     return Scaffold(
       backgroundColor: Colors.purpleAccent,
       // appBar: AppBar(title: Text('Inicio')),
@@ -235,7 +248,9 @@ class _ViewYapearScreenState extends State<ViewYapearScreen> {
               onPressed: () {
                 // Navigator.pop(context);
                 int count = 0;
-                Navigator.of(context).popUntil((_) => count++ >= 3);
+                Navigator.of(
+                  context,
+                ).popUntil((_) => count++ >= ammountPreviousRoute);
               },
             ),
           ),

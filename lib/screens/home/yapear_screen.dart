@@ -318,15 +318,18 @@ class _YapearScreenState extends State<YapearScreen> {
                                   Navigator.pushNamed(
                                     context,
                                     "/view-yapear",
-                                    arguments: DatadetailsModel(
-                                      nameUser:
-                                          contactUsers.userRecept.fullName,
-                                      phone: contactUsers.userRecept.phone,
-                                      codeSecurity: "162",
-                                      operation: "121213211",
-                                      ammount: monto,
-                                      date: date,
-                                    ),
+                                    arguments: {
+                                      "dataDetails": DatadetailsModel(
+                                        nameUser:
+                                            contactUsers.userRecept.fullName,
+                                        phone: contactUsers.userRecept.phone,
+                                        codeSecurity: "162",
+                                        operation: "121213211",
+                                        ammount: monto,
+                                        date: date,
+                                      ),
+                                      "ammountPreviousRoute": 3,
+                                    },
                                   );
                                 } catch (e) {
                                   ScaffoldMessenger.of(context).showSnackBar(
