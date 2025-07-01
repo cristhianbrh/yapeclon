@@ -182,74 +182,78 @@ class _ListcontactScreenState extends State<ListcontactScreen> {
     );
     return Scaffold(
       // appBar: AppBar(title: Text('Inicio')),
+      backgroundColor: Color.fromARGB(255, 115, 9, 144),
       body: SafeArea(
-        child: Column(
-          // Usar Column en lugar de SingleChildScrollView para evitar el error
-          children: [
-            topHeader(context),
-            headerPageView(),
-            SizedBox(height: 20),
-            Container(
-              height: 60,
-              width: double.infinity,
-              margin: const EdgeInsets.all(8),
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    offset: Offset(0, 0),
-                    blurRadius: 3,
-                  ),
-                ],
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                // spacing: 10, // Remove, not valid for Row
-                children: [
-                  Iconify(Subway.search, color: Colors.black26),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: TextField(
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Ingresa celular o busca contacto",
-                        hintStyle: TextStyle(
-                          color: Color.fromARGB(62, 34, 34, 17),
-                          fontSize: 15,
-                        ),
-                      ),
-                      onChanged: _onSearchChanged,
+        child: Container(
+          color: Colors.white,
+          child: Column(
+            // Usar Column en lugar de SingleChildScrollView para evitar el error
+            children: [
+              topHeader(context),
+              headerPageView(),
+              SizedBox(height: 20),
+              Container(
+                height: 60,
+                width: double.infinity,
+                margin: const EdgeInsets.all(8),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      offset: Offset(0, 0),
+                      blurRadius: 3,
                     ),
-                  ),
-                ],
+                  ],
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  // spacing: 10, // Remove, not valid for Row
+                  children: [
+                    Iconify(Subway.search, color: Colors.black26),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: TextField(
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "Ingresa celular o busca contacto",
+                          hintStyle: TextStyle(
+                            color: Color.fromARGB(62, 34, 34, 17),
+                            fontSize: 15,
+                          ),
+                        ),
+                        onChanged: _onSearchChanged,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              // Aquí hemos agregado Expanded para evitar el desbordamiento
-              child: SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 25),
-                  child: Column(
-                    children: [
-                      ..._filteredContacts
-                          .map(
-                            (contact) =>
-                                ContactViewWidget(contact, userData, context),
-                          )
-                          .toList(),
-                      if (_searchText.isNotEmpty && !exists)
-                        NewNumberViewWidget(_searchText, userData, context),
-                    ],
+              SizedBox(height: 20),
+              Expanded(
+                // Aquí hemos agregado Expanded para evitar el desbordamiento
+                child: SingleChildScrollView(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 25),
+                    child: Column(
+                      children: [
+                        ..._filteredContacts
+                            .map(
+                              (contact) =>
+                                  ContactViewWidget(contact, userData, context),
+                            )
+                            .toList(),
+                        if (_searchText.isNotEmpty && !exists)
+                          NewNumberViewWidget(_searchText, userData, context),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

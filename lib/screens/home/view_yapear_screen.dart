@@ -4,6 +4,7 @@ import 'package:iconify_flutter/icons/icon_park_outline.dart';
 import 'package:iconify_flutter/icons/material_symbols.dart';
 import 'package:iconify_flutter/icons/tabler.dart';
 import 'package:yapeclon/data/models/useinscreen/datadetails_model.dart';
+import 'package:yapeclon/layouts/layout_main.dart';
 
 class ViewYapearScreen extends StatefulWidget {
   const ViewYapearScreen({super.key});
@@ -30,156 +31,151 @@ class _ViewYapearScreenState extends State<ViewYapearScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.purpleAccent,
-      // appBar: AppBar(title: Text('Inicio')),
-      body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          width: double.infinity,
-          height: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color.fromARGB(255, 148, 102, 168), Color(0xFF720e9e)],
+    return LayoutMain(
+      child: Column(
+        children: [
+          //CODIFICA AQUÍ
+          _topHeader(context),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(20)),
             ),
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-          ),
-          child: Column(
-            children: [
-              //CODIFICA AQUÍ
-              _topHeader(context),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                ),
-                child: Column(
+            margin: EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 10,
+              children: [
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 10,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Text(
+                      dataDetails.ammount > 0 ? "¡Te yapearon!" : "¡Yapeaste!",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.purple,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        Iconify(Tabler.share, color: Colors.tealAccent),
                         Text(
-                          "¡Yapeaste!",
+                          "COMPARTIR",
                           style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.purple,
+                            fontSize: 16,
+                            color: Colors.tealAccent,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        Row(
-                          children: [
-                            Iconify(Tabler.share, color: Colors.tealAccent),
-                            Text(
-                              "COMPARTIR",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.tealAccent,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
-                        ),
                       ],
                     ),
+                  ],
+                ),
+                Row(
+                  spacing: 3,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(
-                      "S/ ${dataDetails.ammount?.abs() ?? 0}",
+                      "S/",
                       style: TextStyle(
                         fontSize: 30,
                         color: Colors.black87,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     Text(
-                      dataDetails.nameUser,
-                      // "Eydi E. Medina V.",
+                      dataDetails.ammount.abs().toString(),
                       style: TextStyle(
-                        fontSize: 25,
+                        fontSize: 48,
                         color: Colors.black87,
+                        fontWeight: FontWeight.w900,
+                        height: 1.1,
+                      ),
+                    ),
+                  ],
+                ),
+                Text(
+                  dataDetails.nameUser,
+                  // "Eydi E. Medina V.",
+                  style: TextStyle(
+                    fontSize: 25,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Row(
+                  children: [
+                    Text(
+                      formatDateTime(dataDetails.date),
+                      // "📅 22 may. 2025 | 🕒 03:29 p. m.",
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.black54,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    Row(
+                  ],
+                ),
+                if (dataDetails.description != null)
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 10),
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(
+                        13,
+                        0,
+                        18,
+                        57,
+                      ), // Blanco semitransparente
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                    width: double.infinity,
+                    child: Row(
+                      spacing: 5,
                       children: [
+                        Iconify(
+                          IconParkOutline.message,
+                          size: 15,
+                          color: Colors.purple,
+                        ),
                         Text(
-                          formatDateTime(dataDetails.date),
-                          // "📅 22 may. 2025 | 🕒 03:29 p. m.",
+                          // dataDetails.descriptionTransaction ??
+                          "${dataDetails.description}",
                           style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black54,
+                            fontSize: 16,
+                            color: Colors.black87,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
                     ),
-                    if (dataDetails.description != null)
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(
-                            13,
-                            0,
-                            18,
-                            57,
-                          ), // Blanco semitransparente
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                        ),
-                        width: double.infinity,
-                        child: Row(
-                          spacing: 5,
-                          children: [
-                            Iconify(
-                              IconParkOutline.message,
-                              size: 15,
-                              color: Colors.purple,
-                            ),
-                            Text(
-                              // dataDetails.descriptionTransaction ??
-                              "${dataDetails.description}",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.black87,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    Divider(
-                      color: Colors.black12, // Color de la línea
-                      thickness: 1.0, // Grosor de la línea
-                      height: 20.0, // Espaciado vertical
-                    ),
-                    _securityCodeWidget(dataDetails.codeSecurity),
-                    Divider(
-                      color: Colors.black12, // Color de la línea
-                      thickness: 1.0, // Grosor de la línea
-                      height: 20.0, // Espaciado vertical
-                    ),
-                    _dataViewWidget(
-                      "Nro. de celular",
-                      "*** *** ${dataDetails.phone.substring(6, dataDetails.phone.length)}",
-                    ),
-                    _dataViewWidget("Destino", "Yape"),
-
-                    _dataViewWidget("Nro. de operación", dataDetails.operation),
-                  ],
+                  ),
+                Divider(
+                  color: Colors.black12, // Color de la línea
+                  thickness: 1.0, // Grosor de la línea
+                  height: 20.0, // Espaciado vertical
                 ),
-              ),
-            ],
+                _securityCodeWidget(dataDetails.codeSecurity),
+                Divider(
+                  color: Colors.black12, // Color de la línea
+                  thickness: 1.0, // Grosor de la línea
+                  height: 20.0, // Espaciado vertical
+                ),
+                _dataViewWidget(
+                  "Nro. de celular",
+                  "*** *** ${dataDetails.phone.substring(6, dataDetails.phone.length)}",
+                ),
+                _dataViewWidget("Destino", "Yape"),
+
+                _dataViewWidget("Nro. de operación", dataDetails.operation),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -221,7 +217,7 @@ class _ViewYapearScreenState extends State<ViewYapearScreen> {
 
   Widget _topHeader(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 0),
+      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
       child: Row(
         spacing: 20,
         crossAxisAlignment: CrossAxisAlignment.start,

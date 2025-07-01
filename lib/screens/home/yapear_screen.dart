@@ -58,7 +58,7 @@ class _YapearScreenState extends State<YapearScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.purpleAccent,
+      backgroundColor: Color.fromARGB(255, 115, 9, 144),
       // appBar: AppBar(title: Text('Inicio')),
       body: SafeArea(
         child: Container(
@@ -320,8 +320,8 @@ class _YapearScreenState extends State<YapearScreen> {
                                         operation: "18945451",
                                         ammount: monto,
                                         description:
-                                            (_descriptionController
-                                                    .text
+                                            (_descriptionController.text
+                                                    .trim()
                                                     .isNotEmpty)
                                                 ? _descriptionController.text
                                                     .trim()
