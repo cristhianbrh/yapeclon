@@ -196,7 +196,7 @@ class _YapearScreenState extends State<YapearScreen> {
                       text: 'OTROS BANCOS',
                       fontSize: 14,
                       onPressed: () {
-                        Navigator.pushNamed(context, "/house");
+                        // Navigator.pushNamed(context, "/house");
                       },
                     ),
                   ),
